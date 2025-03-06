@@ -15,22 +15,18 @@ module.exports = (sequelize, DataTypes) => {
             isEmail: true
           }
         },
-        username: {
-          type: DataTypes.STRING(50),
+        /*
+        Lägg till om vi vill senare :)
+        password: {
+          type: DataTypes.STRING(200),
           allowNull: false,
           validate: {
-            len: [3, 50]
+            len: [8, 50],
           }
-        },
+        },*/ 
         firstName: DataTypes.STRING(50),
         lastName: DataTypes.STRING(50),
         description: DataTypes.TEXT,
-        imageUrl: {
-          type: DataTypes.STRING(255),
-          validate: {
-            isUrl: true
-          }
-        }
       },
       { underscored: true }
     );
