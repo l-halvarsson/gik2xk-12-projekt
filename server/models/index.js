@@ -37,7 +37,22 @@ Object.keys(db).forEach(modelName => {
   }
 });
 
+//Definiera relationer
 
+// En användare kan ha flera produkter i en kundvagn
+db.User.hasMany(db.Cart, { foreignKey: 'user_id', onDelete: 'CASCADE' });
+db.Cart.belongsTo(db.User, { foreignKey: 'user_id' });
+
+// En produkt kan ha flera betyg
+db.Product.hasMany(db.Rating, { foreignKey: 'product_id', onDelete: 'CASCADE' });
+db.Rating.belongsTo(db.Product, { foreignKey: 'product_id' });
+
+// En cart kan ha flera produkter via CartRow
+db.Cart.hasMany(db.CartRow, { foreignKey: 'cart_id', onDelete: 'CASCADE' });
+db.Product.hasMany(db.CartRow, { foreignKey: 'product_id', onDelete: 'CASCADE' });
+
+db.CartRow.belongsTo(db.Cart, { foreignKey: 'cart_id' });
+db.CartRow.belongsTo(db.Product, { foreignKey: 'product_id' });
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
