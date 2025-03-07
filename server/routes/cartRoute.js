@@ -19,4 +19,4 @@ router.delete('/', (req, res) => {
     res.send('Delete products');
 });
 
-module.export = router;
+module.exports = router;

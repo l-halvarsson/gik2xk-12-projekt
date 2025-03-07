@@ -27,10 +27,11 @@ var server = http.createServer(app);
 
 const db = require('../models/');
 db.sequelize
-  .sync({force: true})
+  .sync()
+  //{force: true}
   .then(() => {
     server.listen(port, () => {
-      console.log(`Server running on local host:${port}`);
+      console.log(`Server running on localhost:${port}`);
     });
   })
   .catch((e) => {
