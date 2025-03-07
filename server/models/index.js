@@ -16,6 +16,7 @@ if (config.use_env_variable) {
   sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
 
+
 fs
   .readdirSync(__dirname)
   .filter(file => {
@@ -49,7 +50,7 @@ db.Rating.belongsTo(db.Product, { foreignKey: 'product_id' });
 
 // En cart kan ha flera produkter via CartRow
 db.Cart.hasMany(db.CartRow, { foreignKey: 'cart_id', onDelete: 'CASCADE' });
-db.Product.hasMany(db.CartRow, { foreignKey: 'product_id', onDelete: 'CASCADE' });
+//db.Product.hasMany(db.CartRow, { foreignKey: 'product_id', onDelete: 'CASCADE' });
 
 db.CartRow.belongsTo(db.Cart, { foreignKey: 'cart_id' });
 db.CartRow.belongsTo(db.Product, { foreignKey: 'product_id' });
