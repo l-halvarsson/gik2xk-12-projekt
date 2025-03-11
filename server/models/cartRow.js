@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
             },
             onDelete: 'CASCADE'
           },
-          cart_id: { //FK till carts
+          /*cart_id: { //FK till carts
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
               key: 'id'
             },
             onDelete: 'CASCADE'
-          }
+          }*/
       },
       { underscored: true }
     );

@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
           type: DataTypes.BOOLEAN,
           allowNull: false
         },
-        user_id: {  //Här lägger vi till FK
+        /*user_id: {  //Här lägger vi till FK
           type: DataTypes.INTEGER,
           allowNull: false,
           references: {
@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
             key: 'id'
           },
           onDelete: 'CASCADE' //Om en produkt tas bort, raderas alla dess ratings
-        }
+        }*/
       },
       { underscored: true }
     );
