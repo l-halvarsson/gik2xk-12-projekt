@@ -2,16 +2,16 @@ module.exports = (sequelize, DataTypes) => {
     return sequelize.define(
       'CartRow',
       {
-        id: {
+      /*  id: {
           type: DataTypes.INTEGER,
           primaryKey: true,
           autoIncrement: true
-        },
+        },*/
         amount: {
           type: DataTypes.DOUBLE,
           allowNull: false
         },
-        product_id: { //FK till products
+       /* product_id: { //FK till products
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
             },
             onDelete: 'CASCADE'
           },
-          /*cart_id: { //FK till carts
+          cart_id: { //FK till carts
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {

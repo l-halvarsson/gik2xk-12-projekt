@@ -48,12 +48,14 @@ db.Cart.belongsTo(db.User, { foreignKey: 'user_id' });
 db.Product.hasMany(db.Rating, { foreignKey: 'product_id', onDelete: 'CASCADE' });
 db.Rating.belongsTo(db.Product, { foreignKey: 'product_id' });
 
-// En cart kan ha flera produkter via CartRow
-db.Cart.hasMany(db.CartRow, { foreignKey: 'cart_id', onDelete: 'CASCADE' });
-//db.Product.hasMany(db.CartRow, { foreignKey: 'product_id', onDelete: 'CASCADE' });
+// En kundvagn (Cart) kan ha flera produkter via CartRow
+db.Cart.belongsToMany(db.Product, { through: db.CartRow, foreignKey: 'cart_id' });
+db.Product.belongsToMany(db.Cart, { through: db.CartRow, foreignKey: 'product_id' });
 
+// CartRow hör till både Cart och Product
 db.CartRow.belongsTo(db.Cart, { foreignKey: 'cart_id' });
 db.CartRow.belongsTo(db.Product, { foreignKey: 'product_id' });
+
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
