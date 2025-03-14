@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const { where } = require('sequelize');
 const db = require('../models');
+const productService = require('../services/productService');
 
 
 //Eventuella constraints
@@ -14,41 +15,19 @@ const db = require('../models');
 
 /*----- Klart ----- */
 //Hämta alla produkter
-router.get('/', async(req, res) => {
-    try {
-        //Fetchning och lagring av produkter
-        const products = await db.Product.findAll();
-        res.json(products);//svaret 
-       
-    } catch (error){
-        res.status(500).json({error: 'Det gick inte att hämta alla produkter'}) 
-
-    }
+router.get('/', (req, res) => {
+productService.getAllProducts().then((result) => {
+    res.status(result.status).json(result.data);
+    });
 });
+
 //Skapa en produkt - bilden kvar
-router.post('/', async(req, res) => {
-    try {
-        //Hämta data från "body" - hämta bild
-        const {title, description, price} = req.body;
-
-        //validera det upphämtade datan - att alla fält är ifyllda
-        if (!title || !price || !description ) {
-            return res.status(400).json({ error: "Fyll i alla fält" });
-        }
-
-        // lagra data i en gemensam variabel
-        const newProductData = { title, description, price };
-        
-
-        //Skapa en produkt med de nya värdena och lagra det i databasen
-        const newProduct = await db.Product.create(newProductData);
-
-        res.status(200).json(newProduct);
-       
-    } catch (error){
-        res.status(500).json({ error: "Kunde inte skapa produkten"});
-
-    } 
+router.post('/', (req, res) => {
+            //Hämta data från "body" - hämta bild
+            const newProductData = req.body;
+            productService.createProduct(newProductData).then((result) => {
+                res.status(result.status).json(result.data);
+              });
 });
 //Ta bort en produkt - baserad på id
 router.delete('/:id', async(req, res) => {
@@ -68,21 +47,12 @@ router.delete('/:id', async(req, res) => {
 });
 
 // Hämta en specifik produkt inklusive alla betyg - Testa när betygen är inlags
-router.get('/:id/', async (req, res) => {
-    try {
-        // Hämta produkten och inkludera alla betyg
-        const product = await db.Product.findByPk(req.params.id, {
-            include: [{ model: db.Rating, require: false }] // Inkluderar betyg från Rating-modellen
+router.get('/:id/', (req, res) => {
+    const id = req.params.id;
+
+    productService.getProductById(id).then((result) => {
+        res.status(result.status).json(result.data);
         });
-
-        if (!product) {
-            return res.status(404).json({ message: "Produkt hittades inte" });
-        }
-
-        res.json(product);
-    } catch (error) {
-        res.status(500).json({ message: "Serverfel", error: error.message });
-    }
 });
 
 
