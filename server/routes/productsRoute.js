@@ -12,8 +12,8 @@ const productService = require('../services/productService');
 
 
 
-
 /*----- Klart ----- */
+
 //Hämta alla produkter
 router.get('/', (req, res) => {
 productService.getAllProducts().then((result) => {
@@ -21,7 +21,16 @@ productService.getAllProducts().then((result) => {
     });
 });
 
-//Skapa en produkt - bilden kvar
+// Hämta en specifik produkt inklusive alla betyg - Testa när betygen är inlags
+router.get('/:id/', (req, res) => {
+    const id = req.params.id;
+
+    productService.getProductById(id).then((result) => {
+        res.status(result.status).json(result.data);
+        });
+});
+
+//Skapa en produkt - OBS bilden kvar
 router.post('/', (req, res) => {
             //Hämta data från "body" - hämta bild
             const newProductData = req.body;
@@ -29,6 +38,9 @@ router.post('/', (req, res) => {
                 res.status(result.status).json(result.data);
               });
 });
+
+/*----- Kvar ----- */
+
 //Ta bort en produkt - baserad på id
 router.delete('/:id', async(req, res) => {
     try {
@@ -45,20 +57,6 @@ router.delete('/:id', async(req, res) => {
         
     }
 });
-
-// Hämta en specifik produkt inklusive alla betyg - Testa när betygen är inlags
-router.get('/:id/', (req, res) => {
-    const id = req.params.id;
-
-    productService.getProductById(id).then((result) => {
-        res.status(result.status).json(result.data);
-        });
-});
-
-
-
-
-/*----- Kvar ----- */
 
 
 //Uppdater en produkt - baserat på id
