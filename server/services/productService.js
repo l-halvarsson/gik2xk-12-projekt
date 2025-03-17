@@ -6,6 +6,9 @@ const {
     createResponseMessage
   } = require('../helpers/responseHelper');
 
+  /*----- Klart ----- */
+
+// Hämtar alla produkter
 async function getAllProducts() {
         try {
             //Fetchning och lagring av produkter
@@ -16,9 +19,10 @@ async function getAllProducts() {
             return createResponseError(error.status, error.message);
         }
 }
+
+// Hämta produkten och inkludera alla betyg
 async function getProductById(id) {
         try {
-            // Hämta produkten och inkludera alla betyg
             const product = await db.Product.findByPk(id, {
                 include: [{ model: db.Rating, require: false }] // Inkluderar betyg från Rating-modellen
             });
@@ -34,35 +38,112 @@ async function getProductById(id) {
         }
 }
 
+//Skapa produkt
 async function createProduct(newProduct) {
     try {
-        /*//validera det upphämtade datan - att alla fält är ifyllda
-        if (!title || !price || !description ) {
-                return res.status(400).json({ error: "Fyll i alla fält" });
-            }*/
-            const createProduct = await db.Product.create(newProduct);
+        const createProduct = await db.Product.create(newProduct);
 
-            return createResponseSuccess(createProduct);
+        return createResponseSuccess(createProduct);
            
         } catch (error){
             return createResponseError(error.status, error.message);
     
         } 
 }
-async function deleteProduct() {}
-async function deleteProductRating() {}
-async function updateProduct() {}
-async function createProductRating() {}
-async function calculateAverageRating() {}
 
+// Redo att testas
+async function deleteProduct(id) {
+    try {
+        // Ta bort den valda produkten från databasen
+        const deletedProduct = await db.Product.destroy({ where: { id: id } });
+
+         // Kontrollera om någon produkt togs bort
+        if (deletedProduct === 0) {
+            return createResponseError(404, "Produkten hittades inte");
+        }
+
+        //Returnerar svaret
+        return createResponseSuccess('Produkten har tagits bort'); 
+    } catch (error) {
+        return createResponseError(error.status, error.message);
+        
+    }
+
+}
+
+ //Uppdatera produkt
+async function updateProduct(id, updatedData) {
+    try {
+        // Hämta produkten
+        const productToUpdate = await db.Product.findByPk(id);
+
+        if (!productToUpdate) {
+            return createResponseError(404, "Produkten hittades inte");
+        }
+
+        // Uppdatera produkten
+        await productToUpdate.update(updatedData);
+
+        return createResponseSuccess("Produkten uppdaterades"); 
+    } catch (error) {
+        return createResponseError(500, "Produkten gick inte att uppdatera.");
+    }
+}
+
+// Skapa rating för en produkt 
+async function createProductRating(productId, ratingValue) {
+    if (!productId) {
+        return createResponseError(422, 'Id är obligatoriskt');
+    }
+    // Göra en kontroll om rating har ett giltigt värde
+    if (!ratingValue || ratingValue < 1 || ratingValue > 5){
+        return createResponseError (422, 'Betyget måste vara mellan 1 och 5');
+    } 
+    try {
+        // kopplar den nya ratingen till produkt
+        const newRating = await db.Rating.create({
+            product_id: productId,
+            rating: ratingValue                     
+
+        });
+
+        return createResponseSuccess(newRating);
+
+    } catch (error) {
+        return createResponseError("Kunde inte skapa betyg");
+    }
+}
+
+// Berälnar snittbetyg för en produkt
+async function calculateAverageRating(productId) {
+    try {
+        // Hämta alla betyg för produkten
+        const ratings = await db.Rating.findAll({
+            where: { product_id: productId },
+            attributes: ['rating'] // Hämta endast betygsfältet
+        });
+
+        // Om inga betyg finns, returnera ett meddelande utan averageRating
+        if (ratings.length === 0) {
+            return createResponseMessage(200, "Denna produkt har inga betyg ännu.");
+        }
+
+        // Beräkna genomsnittet
+        const total = ratings.reduce((sum, rating) => sum + rating.rating, 0);
+        const average = total / ratings.length;
+
+        // Returnerar snittbetyget
+        return createResponseSuccess({ averageRating: average.toFixed(1) });
+    } catch (error) {
+        return createResponseError(500, "Ett fel uppstod vid beräkning av snittbetyget", error.message);
+    }
+} 
 module.exports = {
     getAllProducts,
     getProductById,
     createProduct,
-    /*getProductRating,
     deleteProduct,
-    deleteProductRating,
     updateProduct,
     createProductRating,
-    calculateAverageRating*/
+    calculateAverageRating
 };

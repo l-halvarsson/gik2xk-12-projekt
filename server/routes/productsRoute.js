@@ -27,7 +27,7 @@ router.get('/:id/', (req, res) => {
 
     productService.getProductById(id).then((result) => {
         res.status(result.status).json(result.data);
-        });
+        }); 
 });
 
 //Skapa en produkt - OBS bilden kvar
@@ -39,60 +39,47 @@ router.post('/', (req, res) => {
               });
 });
 
-/*----- Kvar ----- */
-
 //Ta bort en produkt - baserad på id
-router.delete('/:id', async(req, res) => {
-    try {
-        //hämtar up det inmatade id:et
-        const { id } = req.params;
-
-        //Tar bort den valda produkten från databasen
-        const deletedProduct = await db.Product.destroy({ where: { id: id } });
-
-        //Returnerar svaret
-        res.json(`Produkten raderades`);   
-    } catch (error) {
-        res.json({error: " Produkten gick inte att ta bort."});
-        
-    }
+router.delete('/:id', (req, res) => {
+    productService.deleteProduct(req.params.id)
+        .then(result => {
+            res.status(result.status).json(result.data);
+        });
 });
-
 
 //Uppdater en produkt - baserat på id
 router.put('/:id', async (req, res) => {
+    const { id } = req.params;
+    const updatedData = req.body;
 
-    try{
-        //hämta produkt
-        const { id } = req.params;
-        const { title, description, price } = req.body;
-
-        //
-        
-        //hämta och updatera produkt
-        const productToUpdate = await db.Product.findByPk(id);
-
-    
-        await productToUpdate.update({ title, description, price });
-
-        res.json(`Produkten updaterades`); 
-        //res.status(200).json("Produkten har updaterats")
-
-    } catch(error){
-        res.json({error: " Produkten gick inte att updatera."});
-
-        //res.status(5000).json({error: " Produkten gick inte att updatera."});
-    }
-    
-    
-
-
-
-
-
-
-
+    const result = await productService.updateProduct(id, updatedData);
+    res.status(result.status).json(result.data);
 });
+    
+// Hämta medelbetyget för en specifik produkt
+router.get('/:id/average-rating', async (req, res) => {
+    const { id } = req.params;
+    const { rating } = req.body;
+
+    const result = await productService.calculateAverageRating(id, rating);
+    res.status(result.status).json(result.data);
+});
+    
+// Lägg till betyg på produkt
+router.post('/:id/ratings', async (req, res) => {
+    const { id } = req.params;
+
+    const result = await productService.createProductRating(id);
+    res.status(result.status).json(result.data);    
+});     
+
+
+
+
+
+
+
+
 
 
 
