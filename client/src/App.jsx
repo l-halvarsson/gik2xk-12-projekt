@@ -15,10 +15,10 @@ function App() {
         <AppBar position="static">
           <Toolbar>
             <Typography variant="h1" component="div" sx={{ flexGrow: 1 }}>
-              <Link to="/">Blogg</Link>
+              <Link to="/">Webbshop</Link>
             </Typography>
             <Button color="inherit">
-              <Link to="/posts/new">Skapa inlägg</Link>
+              <Link to="/products">Skapa inlägg</Link>
             </Button>
           </Toolbar>
         </AppBar>
@@ -31,4 +31,4 @@ function App() {
 }
 
 
-export default App
+export default App;

@@ -1,3 +1,4 @@
+
 function AllProducts() {
     return <h2>Alla produkter</h2> ;
 }
