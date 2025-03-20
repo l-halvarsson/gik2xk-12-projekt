@@ -11,15 +11,15 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(50),
         allowNull: false,
         validate: {
-          len: [3, 50]
+          len: [2, 100]
         }
       },
       description: DataTypes.TEXT,
       imageUrl: {
-        type: DataTypes.STRING(255),
-        validate: {
+        type: DataTypes.STRING(255)//,
+        /*validate: {
           isUrl: true
-        }
+        }*/
       },
       price: {
         type: DataTypes.DOUBLE(10,2),

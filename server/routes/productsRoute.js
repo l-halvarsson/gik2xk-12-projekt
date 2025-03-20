@@ -2,16 +2,41 @@ const router = require('express').Router();
 const { where } = require('sequelize');
 const db = require('../models');
 const productService = require('../services/productService');
-
+//const multer = require('multer'); //Tillagt idag
+const path = require("path");
 
 //Eventuella constraints
 
 //pris - får inte vara 0
 //titel - får inte vara för kort
 //Beskrivning & 
+/*
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/'); // Spara bilder i 'uploads/'-mappen
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname)); // Använd timestamp + rätt filändelse
+    }
+});
 
+const uploads = multer({
+    storage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // Begränsa till 5MB
+    fileFilter: (req, file, cb) => {
+        const fileTypes = /jpeg|jpg|png|gif/;
+        const extName = fileTypes.test(path.extname(file.originalname).toLowerCase());
+        const mimeType = fileTypes.test(file.mimetype);
 
+        if (extName && mimeType) {
+            cb(null, true);
+        } else {
+            cb(new Error("Endast bilder i formaten JPEG, JPG, PNG och GIF är tillåtna!"));
+        }
+    }
+});
 
+*/
 /*----- Klart ----- */
 
 //Hämta alla produkter
@@ -30,14 +55,16 @@ router.get('/:id/', (req, res) => {
         }); 
 });
 
-//Skapa en produkt - OBS bilden kvar
-router.post('/', (req, res) => {
-            //Hämta data från "body" - hämta bild
-            const newProductData = req.body;
-            productService.createProduct(newProductData).then((result) => {
-                res.status(result.status).json(result.data);
-              });
-});
+
+//Skapa en produkt 
+ //Skapa en produkt - OBS bilden kvar
+ router.post('/', (req, res) => {
+    //Hämta data från "body" - hämta bild
+    const newProductData = req.body;
+    productService.createProduct(newProductData).then((result) => {
+        res.status(result.status).json(result.data);
+      });
+}); 
 
 //Ta bort en produkt - baserad på id
 router.delete('/:id', (req, res) => {
@@ -86,3 +113,4 @@ router.post('/:id/ratings', async (req, res) => {
 
 
 module.exports = router;
+//module.exports = uploads;

@@ -8,6 +8,41 @@ const {
 
   /*----- Klart ----- */
 
+  const constraints = {
+    title: {
+        presence: { allowEmpty: false, message: "^Titeln får inte vara tom." },
+        length: {
+            minimum: 2,
+            maximum: 100,
+            tooShort: "^Titeln måste vara minst %{count} tecken lång.",
+            tooLong: "^Titeln får inte vara längre än %{count} tecken lång."
+        }
+    },
+    description: {
+        presence: { allowEmpty: false, message: "^Beskrivningen får inte vara tom." },
+        length: {
+            minimum: 10,
+            maximum: 1000,
+            tooShort: "^Beskrivningen måste vara minst %{count} tecken lång.",
+            tooLong: "^Beskrivningen får inte vara längre än %{count} tecken lång."
+        }
+    },
+    price: {
+        presence: { allowEmpty: false, message: "^Pris måste anges." },
+        numericality: {
+            greaterThan: 0,
+            message: "^Priset måste vara en positiv siffra."
+        }
+    }/*,
+    imageUrl: {
+        presence: { allowEmpty: false, message: "^En bild-URL måste anges." },
+        format: {
+            pattern: /\.(jpeg|jpg|png|gif)$/i,
+            message: "^Endast bilder i formaten JPEG, JPG, PNG och GIF är tillåtna."
+        }
+    }*/
+};
+
 // Hämtar alla produkter
 async function getAllProducts() {
         try {
@@ -40,7 +75,12 @@ async function getProductById(id) {
 
 //Skapa produkt
 async function createProduct(newProduct) {
+    const invalidData = validate(newProduct, constraints);
+    if (invalidData) {
+        return createResponseError(422, invalidData);
+    }
     try {
+        //Validera att alla fält är ifyllda
         const createProduct = await db.Product.create(newProduct);
 
         return createResponseSuccess(createProduct);
