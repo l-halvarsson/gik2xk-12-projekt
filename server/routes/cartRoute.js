@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const db = require('../models');
+const cartService = require('../services/cartService'); //Tillagd idag
 
 router.get('/', (req, res) => {
     db.product.findAll().then((result) => {

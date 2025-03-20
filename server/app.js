@@ -14,6 +14,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/products', require('./routes/productsRoute')); //anger grund-urlen
 app.use('/users', require('./routes/usersRoute')); 
+app.use('/cart', require('./routes/cartRoute')); // Tillagd idag
 
 
 module.exports = app;

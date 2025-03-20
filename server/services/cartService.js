@@ -11,8 +11,8 @@ const {
 // Lägg till produkt i varukorg
 async function addProductToCart(userId, productId, amount) {
   const [cart, created] = await db.Cart.findOrCreate({
-    where: { user_id: userId, status: 'active'},
-    defaults: { user_id: userId, status: 'active'}
+    where: { user_id: userId}, //Ändrat idag
+    defaults: { user_id: userId, payed: false} 
   });
   const cartId = cart.id;
 
