@@ -53,7 +53,7 @@ router.post('/checkout', (req, res) => {
 });
 
 // Vi en användares varukorg 
-router.get('/cart/:userId', (req, res) => {
+router.get('/:userId', (req, res) => {
     //hämta upp userId
     const userId = req.params.userId;
     cartService.showProductsInCart(userId)

@@ -9,6 +9,36 @@ import './index.css'
 import App from './App.jsx'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <App />,
+    children: [
+      {
+        path: '/',
+        element: <Home />
+      },
+      {
+        path: '/products/:id/edit',
+        element: <ProductEdit />
+      },
+      {
+        path: '/products/:id',
+        element: <ProductDetail />
+      },
+      {
+        path: '/products',
+        element: <AllProducts />
+      },
+      {
+        path: '/cart/:userId',
+        element: <CartPage />
+      },
+    ]
+  }
+]);
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <App />
