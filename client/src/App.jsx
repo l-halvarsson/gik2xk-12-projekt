@@ -18,7 +18,7 @@ function App() {
               <Link to="/">Webbshop</Link>
             </Typography>
             <Button color="inherit">
-              <Link to="/products">Skapa inlägg</Link>
+              <Link to="/products">Visa alla produkter</Link>
             </Button>
           </Toolbar>
         </AppBar>
