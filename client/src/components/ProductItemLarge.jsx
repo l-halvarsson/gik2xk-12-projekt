@@ -1,4 +1,4 @@
-//Denna funktion kommer visa mer information om produkten
+//Denna komponent kommer visa mer information om produkten
 //Om man klickar på en produkt visas all information 
 
 /*import Comment from './Comment';

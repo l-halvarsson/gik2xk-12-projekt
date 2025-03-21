@@ -15,7 +15,7 @@ function Home() {
               component={Link}
               to="/products"
               variant="contained"
-              sx={{ mt: 3, backgroundColor: "#89A2B4", borderRadius: 5, padding: "10px 20px" }}
+              sx={{ mt: 3, backgroundColor: "#F5F5DC", borderRadius: 5, padding: "10px 20px", color: "gray" }}
             >
               Shop Collection
             </Button>

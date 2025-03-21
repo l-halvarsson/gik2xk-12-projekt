@@ -5,14 +5,14 @@ import {
   
   Container
 } from "@mui/material";
-import TestNavbar from "./components/Navbar.jsx";
+import Navbar from "./components/Navbar.jsx";
 
 
 
 function App() {
   return (
     <>
-      <TestNavbar />
+      <Navbar /> 
       <Container sx={{ mt: 4 }} maxWidth="xl" component="main">
         <Outlet />
       </Container>
