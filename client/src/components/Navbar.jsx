@@ -39,15 +39,16 @@ function Navbar(){
     function closeMenuDropDown() {
         setMenuDropDown(null);
     }
+
+
     const [loginOpen, setLoginOpen] = useState(false);
     const [userId, setUserId] = useState(localStorage.getItem("userId") || "");
     const [userName, setUserName] = useState("");
-
     async function handleLogin() {
         try {
             const response = await axios.get(`/users/${userId}`);
             const user = response.data;
-            localStorage.setItem("UserId", userId);
+            localStorage.setItem("userId", userId);
             setUserName(user.firstName);
             setLoginOpen(false);
             alert("Inloggad som användare " + user.firstName);
@@ -61,6 +62,13 @@ function Navbar(){
     function goToAdmin() {
         navigate("/admin");
     }
+
+
+    const [cartUpdated, setCartUpdated] = useState(false);
+    const updateCart = () => {
+        setCartOpen(true); // Öppna varukorg när den uppdateras
+    };
+
 
     return (
         <AppBar position="sticky" sx={{height: "7rem", backgroundColor: "#F6F5F0", boxShadow: 'none'}}>
@@ -77,7 +85,6 @@ function Navbar(){
                         </MenuItem>
                     </Menu>
                 </Box>
-
                 {/* Mitten - logo */}
                 <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                     <Link to="/" style={{ textDecoration: "none", color: "grey", alignItems: "center"}}>
@@ -101,7 +108,7 @@ function Navbar(){
                         onClick={() => setLoginOpen(true)}
                         sx={{ width: 40, height: 40 }}
                     >
-                        <AccountCircleIcon fontSize="large" />
+                        <AccountCircleIcon/>
                     </IconButton>
                 )}
 
@@ -122,7 +129,7 @@ function Navbar(){
             {/* Varukorgens sidopanel */}
             <Drawer anchor="right" open={cartOpen}  onClose={toggleCart(false)}>
                 <Box sx={{ width: 300, p: 2 }}>
-                    <Cart userId={userId} /> 
+                    <Cart userId={userId} updateCart={updateCart} /> 
                 </Box>
             </Drawer>
 

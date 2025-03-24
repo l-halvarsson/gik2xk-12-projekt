@@ -5,6 +5,7 @@ const productService = require('../services/productService');
 //const multer = require('multer'); //Tillagt idag
 const path = require("path");
 
+
 //Eventuella constraints
 
 //pris - får inte vara 0
@@ -35,6 +36,7 @@ const uploads = multer({
         }
     }
 });
+
 
 */
 /*----- Klart ----- */

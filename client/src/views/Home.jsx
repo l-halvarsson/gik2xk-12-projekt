@@ -1,43 +1,60 @@
 import React from "react";
-import { Box, Button, Typography, Container, Grid, Paper } from "@mui/material";
+import { Box, Button, Typography, Container, Grid } from "@mui/material";
 import { Link } from "react-router-dom";
+import bannerImage from "../assets/homepage.png";
 
 function Home() {
-    return (
-      <Container maxWidth="lg">
-        <Grid container spacing={2} alignItems="center" sx={{ height: "100vh" }}>
-          {/* Vänster sektion med text och knapp */}
-          <Grid item xs={12} md={6}>
-            <Typography variant="h2" sx={{ fontWeight: 500 }}>
-              CHIC <br /> REVIVAL
-            </Typography>
-            <Button 
-              component={Link}
-              to="/products"
-              variant="contained"
-              sx={{ mt: 3, backgroundColor: "#F5F5DC", borderRadius: 5, padding: "10px 20px", color: "gray" }}
-            >
-              Shop Collection
-            </Button>
-          </Grid>
-  
-          {/* Höger sektion med bild */}
-          <Grid item xs={12} md={6}>
+  return (
+    <Grid container sx={{ height: "100vh" }}>
+      {/* Vänster sektion med text och knapp */}
+      <Grid
+        item
+        xs={12}
+        md={6}
+        sx={{
+          bgcolor: "#F6F5F0",
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "flex-start",
+          px: 8,
+        }}
+      >
+        <Typography variant="h2" sx={{ fontWeight: 500 }}>
+          CHIC <br /> REVIVAL
+        </Typography>
+        <Button
+          component={Link}
+          to="/products"
+          variant="contained"
+          sx={{
+            mt: 3,
+            backgroundColor: "#F5F5DC",
+            borderRadius: 5,
+            padding: "10px 20px",
+            color: "gray",
+          }}
+        >
+          Shop Collection
+        </Button>
+      </Grid>
 
-          {/* Förberett för bild
-            <Box
-            component="img"
-            src="https://source.unsplash.com/random/800x600?fashion" // Byt ut mot din egen bild
-            alt="Fashion Banner"
-            sx={{ width: "100%", borderRadius: 2 }}
-          /> */}
-          
-          </Grid>
-        </Grid>
-      </Container>
-    );
-  }
-  
-  export default Home;
+      {/* Höger sektion med bild */}
+      <Grid item xs={12} md={6} sx={{ height: "100%" }}>
+        <Box
+          component="img"
+          src={bannerImage}
+          alt="Fashion Banner"
+          sx={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+          }}
+        />
+      </Grid>
+    </Grid>
+  );
+}
 
-  
+export default Home;

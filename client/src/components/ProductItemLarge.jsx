@@ -8,26 +8,24 @@ import { addProductToCart } from "../services/CartService";
 
 
 
-function ProductItemLarge({ product, userId }){
+function ProductItemLarge({ product, userId, updateCart }){
   if (!product) return null;
 
 
   const handleAddToCart = async () => {
 
+    
     if (!userId) {
       alert("Du måste vara inloggad för att lägga till produkter i varukorgen.");
       return;
   }
 
-  if (!product?.id) {
-      alert("Produkten saknas eller har inget ID.");
-      return;
-  }
-  
+
     try {
       const amount = 1; // ???
       await addProductToCart(userId, product.id, amount); // Anropa service-funktionen
       alert(`${product.title} har lagts till i din varukorg!`);
+      updateCart();
     } catch (error) {
       alert("Det gick inte att lägga till produkten i varukorgen.");
     }
