@@ -1,16 +1,6 @@
 import axios from './api';
 
 
-//hämtar varukorgens innehåll för en specifik användare
-export async function getAllProductsInCart(userId) {
-    try {
-        const response = await axios.get(`/cart/${userId}`);
-        return response.data; 
-    } catch (error) {
-        console.error("Varukorgen gick inte att hämta:");
-    }
-}
-
 //Lägger till en produkt i varukorgen
 export async function addProductToCart(userId, productId, amount) {
     try {
@@ -25,3 +15,13 @@ export async function addProductToCart(userId, productId, amount) {
     }
 }
 
+//hämtar varukorgens innehåll för en specifik användare
+export async function getAllProductsInCart(userId) {
+    try {
+        //: framfrö?
+        const response = await axios.get(`/cart/${userId}`);
+        return response.data; 
+    } catch (error) {
+        console.error("Varukorgen gick inte att hämta:");
+    }
+}

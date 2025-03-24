@@ -31,7 +31,6 @@ function Navbar(){
           setCartOpen(open);
         };
     }
-
     const [menuDropDown, setMenuDropDown] = useState(null);
     function openMenuDropDown(event) {
         setMenuDropDown(event.currentTarget);
