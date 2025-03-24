@@ -1,54 +1,12 @@
-//import ProductItemLarge from "../components/ProductItemLarge";
-
-/*import { useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { getOne } from "../services/ProductService";
-import ProductItemLarge from "../components/ProductItemLarge";
-import { Container, Button } from "@mui/material";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-
-function ProductDetails() {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const [product, setProduct] = useState(null);
-
-  useEffect(() => {
-    getOne(id).then((data) => {
-      setProduct(data);
-    });
-  }, [id]);
-
-  return (
-    <Container sx={{ mt: 4 }}>
-              <Button
-        variant="contained"
-        startIcon={<ChevronLeftIcon />}
-        onClick={() => navigate(-1)}
-        sx={{
-          mb: 2,
-          backgroundColor: "#F5F5DC",
-          color: "gray",
-          "&:hover": { backgroundColor: "#e0e0e0" },
-        }}
-      >
-        Tillbaka
-      </Button>
-
-      {product && <ProductItemLarge product={product} />}
-    </Container>
-  );
-}
-
-export default ProductDetails;*/
-
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getOne } from "../services/ProductService";
 import ProductItemLarge from "../components/ProductItemLarge";
 import { CircularProgress, Container, Typography, Button } from "@mui/material";
 import axios from 'axios';
-import Rating from "../components/Rating"; // Importera din Rating-komponent
+import RatingForm from "../components/RatingForm"; // Importera din Rating-komponent
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'; // Importera ikonen
+import Rating from "../components/Rating"; // Importera Rating-komponenten
 
 function ProductDetails() {
   const { id } = useParams(); // få produkt-ID från URL
@@ -97,15 +55,14 @@ function ProductDetails() {
       >
         Tillbaka
       </Button>
-
+      {/* Visa produkt + all info */}
       <ProductItemLarge product={product} />
-      <Typography variant="h5" sx={{ mt: 4 }}>Medelbetyg: {averageRating || "Ingen betyg ännu"}</Typography>
-      <Rating productId={id} onRatingSubmitted={() => {
-        // Hämta det nya medelbetyget efter att användaren har satt sitt betyg
-        axios.get(`/api/products/${id}/average-rating`)
-          .then(response => setAverageRating(response.data.averageRating))
-          .catch(error => console.error("Fel vid hämtning av medelbetyg:", error));
-      }} />
+
+      {/* Visa medelbetyget genom Rating-komponenten */}
+      <Rating productId={id} />
+
+      { /* Visar där en sätter betyg på produkt*/}
+      <RatingForm productId={id} />
     </Container>
   );
 }

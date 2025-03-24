@@ -1,53 +1,36 @@
-import React, { useState } from "react";
-import { Rating as MuiRating, Box, Typography, Button } from "@mui/material";
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "../services/api";
+import { Typography, Box } from "@mui/material";
 
-function Rating({ productId, onRatingSubmitted }) {
-    const [value, setValue] = useState(0); // Startvärde för betyg (0 = ingen stjärna vald)
+const Rating = ({ productId }) => {
+  const [averageRating, setAverageRating] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-    const handleChange = (event, newValue) => {
-        setValue(newValue); // Uppdatera betyget när användaren klickar på en stjärna
-    };
+  useEffect(() => {
+    axios
+      .get(`/products/${productId}/average-rating`)
+      .then((response) => {
+        setAverageRating(response.data.averageRating);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Kunde inte hämta betyg:", error);
+        setLoading(false);
+      });
+  }, [productId]);
 
-    const handleSubmit = () => {
-        // Skicka betyget till backend
-        axios.post(`/api/products/${productId}/ratings`, { rating: value })
-            .then(response => {
-                // När betyget skickas och sparas, uppdatera medelbetyget
-                onRatingSubmitted(); // En callback för att uppdatera medelbetyget
-                setValue(0); // Återställ betyget efter inlämning (eller använd en annan logik)
-            })
-            .catch(error => console.error("Fel vid sändning av betyg:", error));
-    };
+  if (loading) {
+    return <Typography>Laddar betyg...</Typography>;
+  }
 
-    return (
-        <Box>
-            <Typography component="legend">Betygsätt produkten!</Typography>
-            <MuiRating
-                name="simple-controlled"
-                value={value} // Det aktuella betyget
-                onChange={handleChange} // Funktion som körs när användaren ändrar betyget
-                max={5} // Max antal stjärnor
-            />
-            <Button
-                variant="contained"
-                onClick={handleSubmit}
-                sx={{
-                    mb: 2,
-                    backgroundColor: "#F5F5DC",
-                    color: "gray",
-                    "&:hover": { backgroundColor: "#e0e0e0" },
-                    mt: 2
-                }}
-            >
-                Skicka betyg
-            </Button>
-            <Typography variant="body1" sx={{ mt: 2 }}>
-                Du har valt {value} stjärnor.
-            </Typography>
-        </Box>
-    );
-}
+  return (
+    <Box sx={{ mt: 2 }}>
+      <Typography variant="h6">
+        Medelbetyg: {averageRating ? averageRating : "Inga betyg ännu"}
+      </Typography>
+    </Box>
+  );
+};
 
 export default Rating;
 

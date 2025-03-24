@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Link, Outlet } from "react-router-dom";
 import { 
     AppBar, 
@@ -19,33 +20,27 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import HiveOutlinedIcon from "@mui/icons-material/HiveOutlined";
-import { Avatar, TextField, Button } from "@mui/material";
+import { Avatar, TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions} from "@mui/material";
 import axios from "../services/api";
 import Cart from './Cart';
 
-
 function Navbar(){
-    //Hanterar varukorgens tillstånd
     const [cartOpen, setCartOpen] = useState(false);
-    //Togglar varukorgens tillstånd
     function toggleCart(open) { 
         return () => {
           setCartOpen(open);
         };
     }
 
-    //Hanterar kategori-listans tillstånd
     const [menuDropDown, setMenuDropDown] = useState(null);
-    //Öppna kategori-listan
     function openMenuDropDown(event) {
         setMenuDropDown(event.currentTarget);
     }
-    //Stänger kategori-listan
     function closeMenuDropDown() {
         setMenuDropDown(null);
     }
-
-    const [userId, setUserId] = useState(localStorage.getItem("userID") || "");
+    const [loginOpen, setLoginOpen] = useState(false);
+    const [userId, setUserId] = useState(localStorage.getItem("userId") || "");
     const [userName, setUserName] = useState("");
 
     async function handleLogin() {
@@ -54,55 +49,24 @@ function Navbar(){
             const user = response.data;
             localStorage.setItem("UserId", userId);
             setUserName(user.firstName);
+            setLoginOpen(false);
             alert("Inloggad som användare " + user.firstName);
-
         } catch (error) {
             alert("Användare med id: " + userId + " hittades inte.");
             setUserName("");
             localStorage.removeItem("userId");
         }
-
     }
+    const navigate = useNavigate();
+    function goToAdmin() {
+        navigate("/admin");
+    }
+
     return (
         <AppBar position="sticky" sx={{height: "7rem", backgroundColor: "#F6F5F0", boxShadow: 'none'}}>
-            {/*Navbar sektionen*/}
             <Toolbar sx={{height: "100%", display: "flex", justifyContent: "space-between" }}>
 
-                {/* Inloggning högst upp till vänster */}
-                <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-                {userName ? (
-                    <Tooltip title={userName}>
-                    <Avatar sx={{ bgcolor: "#888", width: 40, height: 40 }}>
-                        {userName.charAt(0).toUpperCase()}
-                    </Avatar>
-                    </Tooltip>
-                ) : (
-                    <>
-                    <TextField
-                        label="Användar-ID"
-                        variant="outlined"
-                        size="small"
-                        value={userId}
-                        onChange={(e) => setUserId(e.target.value)}
-                        sx={{ backgroundColor: "white", borderRadius: 1 }}
-                    />
-                    <Button
-                        variant="contained"
-                        size="small"
-                        onClick={handleLogin}
-                        sx={{ backgroundColor: "#ccc", color: "black", "&:hover": { backgroundColor: "#bbb" } }}
-                    >
-                        Logga in
-                    </Button>
-                    </>
-                )}
-                </Box>
-        
-
-
-
-
-                {/*Vänster delen - meny*/}
+                {/* Vänster del - meny */}
                 <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
                     <Typography sx={{ cursor: "pointer", display: "flex", alignItems: "center", color: "#0E100E" }}  onClick={openMenuDropDown}>
                         Produkter<KeyboardArrowDownIcon />
@@ -114,37 +78,76 @@ function Navbar(){
                     </Menu>
                 </Box>
 
-                {/*Mitten - logo*/}
+                {/* Mitten - logo */}
                 <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                     <Link to="/" style={{ textDecoration: "none", color: "grey", alignItems: "center"}}>
                         Webbshop <HiveOutlinedIcon sx={{ ml: 1 }} />
                     </Link>
                 </Typography>
 
-                { /*Höger - Profil-varukorgen*/}
-                <Box>
-                    <IconButton component={Link} to="/admin">
-                        <AccountCircleIcon />
+
+                <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+                {/* Avatar eller inloggningsikon */}
+                {userName ? (
+                    <Tooltip title={`Gå till admin (${userName})`}>
+                    <IconButton onClick={goToAdmin}>
+                        <Avatar sx={{ bgcolor: "#888", width: 40, height: 40 }}>
+                        {userName.charAt(0).toUpperCase()}
+                        </Avatar>
                     </IconButton>
-                    <span>|</span>
-                    <IconButton onClick={toggleCart(true)}>
-                        <ShoppingCartIcon />
+                    </Tooltip>
+                ) : (
+                    <IconButton 
+                        onClick={() => setLoginOpen(true)}
+                        sx={{ width: 40, height: 40 }}
+                    >
+                        <AccountCircleIcon fontSize="large" />
                     </IconButton>
+                )}
+
+                {/* Varukorg */}
+                <span>|</span>
+                <IconButton onClick={toggleCart(true)}>
+                    <ShoppingCartIcon />
+                </IconButton>
                 </Box>
+
+                
+
+
+             
+
             </Toolbar>
-            {/*Varukorgens sidopanel*/} 
+
+            {/* Varukorgens sidopanel */}
             <Drawer anchor="right" open={cartOpen}  onClose={toggleCart(false)}>
                 <Box sx={{ width: 300, p: 2 }}>
-                <Typography variant="h6">Du har kommit till din Varukorg</Typography>
-                <List>
-                    <ListItem>
-                    <ListItemText primary="Din varukorg är tom" />
-                    </ListItem>
-                </List>
+                    <Cart userId={userId} /> 
                 </Box>
             </Drawer>
+
+                <Dialog open={loginOpen} onClose={() => setLoginOpen(false)}>
+                <DialogTitle>Logga in</DialogTitle>
+                <DialogContent>
+                <TextField
+                    autoFocus
+                    margin="dense"
+                    label="Användar-ID"
+                    type="text"
+                    fullWidth
+                    variant="outlined"
+                    value={userId}
+                    onChange={(e) => setUserId(e.target.value)}
+                />
+                </DialogContent>
+                <DialogActions>
+                <Button onClick={() => setLoginOpen(false)}>Avbryt</Button>
+                <Button onClick={handleLogin} variant="contained">Logga in</Button>
+                </DialogActions>
+                </Dialog>
+
         </AppBar>
     );
-
 }
+
 export default Navbar;

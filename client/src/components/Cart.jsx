@@ -1,34 +1,44 @@
-function Cart() {
-    const [cart, setCart] = useState([]);
+import React, { useEffect, useState } from "react";
+//import { getAllProductsInCart } from "../services/CartService";
+import { Button, Typography, Box } from "@mui/material";
+
+
+function Cart({ userId }) {
+    const [cartItems, setCartItems] = useState([]);
+    const [totalPrice, setTotalPrice] = useState(0);
 
     useEffect(() => {
-        async function fetchCart() {
-            const data = await getAllProductsFromCart();
-            setCart(data);
-        }
-        fetchCart();
-    }, []);
+        const fetchCartItems = async () => {
+            try {
+                const data = await getAllProductsInCart(userId);
+                setCartItems(data.cart);
+                setTotalPrice(data.totalPrice);
+            } catch (error) {
+                console.error("Ett fel uppstod vid hämtning av varukorgen:", error);
+            }
+        };
+
+        fetchCartItems();
+    }, [userId]);
 
     return (
-        <Card sx={{ maxWidth: 345, position: "relative", borderRadius: 2 }}>
-        
-          {/* Produktbild */}
-          <CardMedia 
-            component="img"
-            height="300"
-            image={product.image || placeholderImage}
-            alt={`Bild på ${product.title}`}
-          />
-        
-         {/* Pris */}
-         <CardContent sx={{ textAlign: 'center' }}>
-            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-              {product.price} SEK 
-            </Typography>
-          </CardContent>
-        </Card>
-      );
-    }
-  
+        <Box>
+            {cartItems.length === 0 ? (
+                <Typography>Din varukorg är tom</Typography>
+            ) : (
+                <Box>
+                    {cartItems.map((item) => (
+                        <Box key={item.productId}>
+                            <Typography>{item.title} - {item.amount} st - {item.total} SEK</Typography>
+                        </Box>
+                    ))}
+                    <Typography>Total: {totalPrice} SEK</Typography>
+                    <Button variant="contained">Gå till kassan</Button>
+                </Box>
+            )}
+        </Box>
+    );
+}
 
-  export default Cart;
+export default Cart;
+
