@@ -95,10 +95,19 @@ router.get('/:id/average-rating', async (req, res) => {
 // Lägg till betyg på produkt
 router.post('/:id/ratings', async (req, res) => {
     const { id } = req.params;
+    const { rating } = req.body;
+  
+    const result = await productService.createProductRating(id, rating);
+    res.status(result.status).json(result.data);
+  });
+ /* TIDIGARE VERSION, testar den nya ovan
+
+router.post('/:id/ratings', async (req, res) => {
+    const { id } = req.params;
 
     const result = await productService.createProductRating(id);
     res.status(result.status).json(result.data);    
-});     
+});     */
 
 
 

@@ -69,4 +69,20 @@ export async function getAllProducts() {
     }
 
     //addRating
-
+    export async function addRating(productId, ratingValue) {
+      try {
+        const response = await axios.post(`/products/${productId}/ratings`, {
+          rating: ratingValue
+        });
+    
+        if (response.status === 200 || response.status === 201) {
+          return response.data;
+        } else {
+          console.log(response.data);
+          return null;
+        }
+      } catch (e) {
+        e?.response ? console.log(e.response.data) : console.log(e);
+        return null;
+      }
+    }

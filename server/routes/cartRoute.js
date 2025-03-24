@@ -23,7 +23,7 @@ router.post('/addProduct', (req, res) => {
         .catch(error => {
             res.status(500).json({ error: "Ett fel uppstod vid tillägg av produkt i varukorgen", details: error.message });
         });
-});
+});  
 
 
 // Ta bort en produkt från varukorgen
@@ -52,7 +52,7 @@ router.post('/checkout', (req, res) => {
     });
 });
 
-// Vi en användares varukorg 
+// Visa en användares varukorg 
 router.get('/:userId', (req, res) => {
     //hämta upp userId
     const userId = req.params.userId;

@@ -54,7 +54,7 @@ db.Product.belongsToMany(db.Cart, { through: db.CartRow, foreignKey: 'product_id
 
 // CartRow hör till både Cart och Product
 db.CartRow.belongsTo(db.Cart, { foreignKey: 'cart_id' });
-db.CartRow.belongsTo(db.Product, { foreignKey: 'product_id' });
+db.CartRow.belongsTo(db.Product, { foreignKey: 'product_id' }); 
 
 
 db.sequelize = sequelize;

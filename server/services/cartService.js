@@ -10,7 +10,7 @@ const {
   
 // Lägg till produkt i varukorg
 async function addProductToCart(userId, productId, amount) {
-  const [cart, created] = await db.Cart.findOrCreate({
+  const [cart, created] = await db.Cart.findOrCreate({ 
     where: { user_id: userId}, //Ändrat idag
     defaults: { user_id: userId, payed: false} 
   });
@@ -30,8 +30,6 @@ async function addProductToCart(userId, productId, amount) {
   }
   return createResponseSuccess()
 }
-
-
 
 // Ta bort produkt i varukorg
 async function removeProductFromCart(userId, productId) {
@@ -69,7 +67,7 @@ async function showProductsInCart(userId){
               attributes: ['amount']
             }, 
             //resten hämtas fron product-tabellen
-            attributes: ['id', 'name', 'price']
+            attributes: ['id', 'title', 'price']
           }
         ]
       });
@@ -98,7 +96,7 @@ async function showProductsInCart(userId){
         // Lägg till produkten i cartItems-arrayen
         cartItems.push({
           productId: product.id,
-          name: product.name,
+          title: product.title,
           price: product.price,
           amount: amount,
           total: total

@@ -1,20 +1,21 @@
 import { useNavigate } from "react-router-dom";
-import { Button, Container, Typography, Grid } from "@mui/material";
+import { Button, Container, Typography } from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ProductItemSmall from "../components/ProductItemSmall";
+import ProductList from "../components/ProductList"; // Importera ProductList
 
 function AllProducts() {
     const navigate = useNavigate();
 
-    const products = [
-        { id: 1, title: "Produkt 1", price: 199, image: "https://via.placeholder.com/300" },
-        { id: 2, title: "Produkt 2", price: 299, image: "https://via.placeholder.com/300" },
-        { id: 3, title: "Produkt 3", price: 399, image: "https://via.placeholder.com/300" },
-        { id: 4, title: "Produkt 4", price: 499, image: "https://via.placeholder.com/300" },
-    ];
-
     return (
         <Container maxWidth="md">
+
+
+            <Typography variant="h3" gutterBottom>
+                Alla produkter
+            </Typography>
+
+            {/* Använd ProductList för att visa produkter */}
+            <ProductList />
             <Button
                 variant="contained"
                 startIcon={<ChevronLeftIcon />}
@@ -29,19 +30,6 @@ function AllProducts() {
             >
                 Tillbaka
             </Button>
-
-            <Typography variant="h3" gutterBottom>
-                Alla produkter
-            </Typography>
-
-            {/* Rendera produkterna i ett Grid */}
-            <Grid container spacing={2}>
-                {products.map((product) => (
-                    <Grid item xs={12} sm={6} md={4} key={product.id}>
-                        <ProductItemSmall product={product} />
-                    </Grid>
-                ))}
-            </Grid>
         </Container>
     );
 }
