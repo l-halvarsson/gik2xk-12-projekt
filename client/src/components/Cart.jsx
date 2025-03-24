@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-//import { getAllProductsInCart } from "../services/CartService";
+import { getAllProductsInCart } from "../services/CartService";
+import { addRating } from "../services/ProductService";
 import { Button, Typography, Box } from "@mui/material";
 
 
@@ -9,6 +10,7 @@ function Cart({ userId }) {
 
     useEffect(() => {
         const fetchCartItems = async () => {
+            if (!userId) return; 
             try {
                 const data = await getAllProductsInCart(userId);
                 setCartItems(data.cart);
@@ -19,7 +21,7 @@ function Cart({ userId }) {
         };
 
         fetchCartItems();
-    }, [userId]);
+    }, [userId,updateCart ]);
 
     return (
         <Box>
