@@ -16,10 +16,10 @@ module.exports = (sequelize, DataTypes) => {
       },
       description: DataTypes.TEXT,
       imageUrl: {
-        type: DataTypes.STRING(255)//,
-        /*validate: {
-          isUrl: true
-        }*/
+        type: DataTypes.STRING(255),
+        validate: {
+          len: [5, 255]
+        }
       },
       price: {
         type: DataTypes.DOUBLE(10,2),

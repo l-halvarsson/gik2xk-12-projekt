@@ -13,7 +13,7 @@ function App() {
   return (
     <>
       <Navbar /> 
-      <Container sx={{ mt: 4 }} maxWidth="xl" component="main">
+      <Container sx={{ mt: 4, border: "#F6F5F0", bgcolor: "#F6F5F0" }} maxWidth="xl" component="main">
         <Outlet />
       </Container>
     </>

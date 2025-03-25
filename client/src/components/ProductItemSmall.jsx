@@ -6,6 +6,7 @@ import placeholderImage from "../assets/placeholder.png";
 import { useNavigate } from "react-router-dom";
 
 
+
 function ProductItemSmall({ product }) {
   const navigate = useNavigate();
 
@@ -21,7 +22,7 @@ function ProductItemSmall({ product }) {
       <CardMedia
         component="img"
         height="300"
-        image={product.image || placeholderImage}
+        image={product.imageUrl || placeholderImage}
         alt={`Bild på ${product.title}`}
       />
       <CardContent sx={{ textAlign: 'center' }}>

@@ -75,7 +75,7 @@ function Navbar(){
 
                 {/* Vänster del - meny */}
                 <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-                    <Typography sx={{ cursor: "pointer", display: "flex", alignItems: "center", color: "#0E100E" }}  onClick={openMenuDropDown}>
+                    <Typography sx={{ cursor: "pointer", display: "flex", alignItems: "center", color: "grey" }}  onClick={openMenuDropDown}>
                         Produkter<KeyboardArrowDownIcon />
                     </Typography>
                     <Menu anchorEl={menuDropDown} open={Boolean(menuDropDown)} onClose={closeMenuDropDown}>
@@ -84,10 +84,12 @@ function Navbar(){
                         </MenuItem>
                     </Menu>
                 </Box>
+
+
                 {/* Mitten - logo */}
                 <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                     <Link to="/" style={{ textDecoration: "none", color: "grey", alignItems: "center"}}>
-                        Webbshop <HiveOutlinedIcon sx={{ ml: 1 }} />
+                        CHIC REVIVAL <HiveOutlinedIcon sx={{ ml: 1 }} />
                     </Link>
                 </Typography>
 
@@ -105,7 +107,7 @@ function Navbar(){
                 ) : (
                     <IconButton 
                         onClick={() => setLoginOpen(true)}
-                        sx={{ width: 40, height: 40 }}
+                        sx={{ width: 50, height: 50 }}
                     >
                         <AccountCircleIcon/>
                     </IconButton>
@@ -118,10 +120,6 @@ function Navbar(){
                 </IconButton>
                 </Box>
 
-                
-
-
-             
 
             </Toolbar>
 

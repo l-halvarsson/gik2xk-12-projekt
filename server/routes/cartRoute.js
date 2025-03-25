@@ -2,28 +2,30 @@ const router = require('express').Router();
 const db = require('../models');
 const cartService = require('../services/cartService'); //Tillagd idag
 
+//Lägger till en produkt i användarens senaste varukorg
+router.post('/addProduct', async (req, res) => {
+    const { userId, productId, amount } = req.body;
+
+    cartService.addProductToCart(userId, productId, amount).then(result => res.status(result.status).json(result.data))
+    .catch(error => {
+      res.status(500).json("Det gick inte att lägga tilli varukorgen");
+    });
+});
+
+
+
+
 router.get('/', (req, res) => {
     db.product.findAll().then((result) => {
     res.send(result);
     });
-});
+}); 
 
 router.put('/', (req, res) => {
     res.send('Put products');
 });
 
-// Lägg till produkt i varokorg
-router.post('/addProduct', (req, res) => {
-    const { userId, productId, amount } = req.body;
-
-    cartService.addProductToCart(userId, productId, amount)
-        .then(result => {
-            res.status(result.status).json(result.data);
-        })
-        .catch(error => {
-            res.status(500).json({ error: "Ett fel uppstod vid tillägg av produkt i varukorgen", details: error.message });
-        });
-});  
+ 
 
 
 // Ta bort en produkt från varukorgen
@@ -52,16 +54,4 @@ router.post('/checkout', (req, res) => {
     });
 });
 
-// Visa en användares varukorg 
-router.get('/:userId', (req, res) => {
-    //hämta upp userId
-    const userId = req.params.userId;
-    cartService.showProductsInCart(userId)
-    .then(result => {
-        res.status(result.status).json(result.data);
-    })
-    .catch(error => {
-        res.status(500).json({error: "Något gick fel vid hämtning av varukorgen"})
-    })
-});
 module.exports = router;

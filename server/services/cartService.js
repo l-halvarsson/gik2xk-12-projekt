@@ -8,28 +8,90 @@ const {
   } = require('../helpers/responseHelper');
 
   
-// Lägg till produkt i varukorg
-async function addProductToCart(userId, productId, amount) {
-  const [cart, created] = await db.Cart.findOrCreate({ 
-    where: { user_id: userId}, //Ändrat idag
-    defaults: { user_id: userId, payed: false} 
-  });
-  const cartId = cart.id;
-
-  const cartRow = await db.CartRow.findOne({
-    where: { cart_id: cartId, product_id: productId}
-  });
-  if (cartRow) {
-    await cartRow.update({ amount: cartRow.amount + amount});
-  } else {
-    await db.CartRow.create({
-      cart_id: cartId,
-      product_id: productId,
-      amount: amount
-    });
+//Lägger till valfritt antal av en produkt i användarens senaste varukorg
+async function addProductToCart(userId, productId, amount){
+  if (!userId || !productId || !amount || amount <= 0) {
+    return createResponseError(400, 'Ange rätt datat');
   }
-  return createResponseSuccess()
+
+  try {
+    // Steg 1: Hämta eller skapa en varukorg där payed = false
+    const [cart] = await db.Cart.findOrCreate({
+      where: { user_id: userId, payed: false }
+    });
+
+    // Steg 2: Kontrollera om produkten redan finns i varukorgen
+    const productExistisInRow = await db.CartRow.findOne({
+      where: {
+        cart_id: cart.id,
+        product_id: productId
+      }
+    });
+
+    if (productExistisInRow) {
+      // Produkten finns redan – uppdatera antalet
+      const updatedRow = await productExistisInRow.update({
+        amount: productExistisInRow.amount + amount
+      });
+      return createResponseSuccess(updatedRow);
+    } else {
+      // Produkten finns inte – skapa en ny rad
+      const newProductRow = await db.CartRow.create({
+        cart_id: cart.id,
+        product_id: productId,
+        amount: amount
+      });
+      return createResponseSuccess(newProductRow);
+    }
+  } catch (error) {
+    return createResponseError(500, 'Produkten kunde inte läggas in i varukorgen');
+  }
+
 }
+
+//Hämta en användares senaste varukorg ink alla tillhörande produkter och deras antal
+async function getLatestCartForUser(userId) {
+  try {
+    const latestCart = await db.Cart.findOne({
+      where: {
+        user_id: userId,
+        payed: false
+      },
+      order: [['created_at', 'DESC']],
+      include: [
+        {
+          model: db.Product,
+          through: {
+            attributes: ['amount']
+          }
+        }
+      ]
+    });
+
+    if (!latestCart) {
+      return createResponseSuccess([]); // tom varukorg
+    }
+
+    // Städa up data. inkludera title, pris, amount
+    const cartItems = latestCart.Products.map(product => ({
+      title: product.title,
+      price: product.price,
+      amount: product.CartRow.amount
+    }));
+
+    return createResponseSuccess(cartItems);
+  } catch (error) {
+    return createResponseError(500, 'Det gick inte att hämta upp varukorgen');
+  }
+} 
+
+
+
+
+
+
+
+
 
 // Ta bort produkt i varukorg
 async function removeProductFromCart(userId, productId) {
@@ -52,67 +114,7 @@ async function removeProductFromCart(userId, productId) {
       return createResponseError(500, "Ett fel uppstod vid borttagning av produkt från varukorgen", error.message);
   }
 }
-
-async function showProductsInCart(userId){
-  try{ 
-      //Hämta senaste varukorgen för en specific användare
-      const cart = await db.Cart.findOne({
-        where: {user_id: userId, payed: false},
-        include: [
-          {
-            //Antalet hämtas från cartRow-tabellen
-            model: db.Product, 
-            through: {
-              model: db.CartRow,
-              attributes: ['amount']
-            }, 
-            //resten hämtas fron product-tabellen
-            attributes: ['id', 'title', 'price']
-          }
-        ]
-      });
-
-      // Kontrollera om cart finns
-      if (!cart || !cart.Products.length) {
-        return createResponseError(404, "Ingen varukorg hittades för användaren");
-      }
- 
-      //en array som lagrar alla produkter i en varukorg
-      let cartItems = [];
-      //en variabel som lagrar total priset
-      let totalPrice = 0;
-      //en for-loop som itererar alla produkter i varukorgen
-      for (let i = 0; i < cart.Products.length; i++) {
-        //I varje iteration hämtas en produkt
-        let product = cart.Products[i];
-        //dess antal
-        let amount = product.CartRow.amount;
-        //totala priset baserat på antalet
-        let total = product.price * amount;
-
-        //uträkning på ALLA produkters totalapris
-        totalPrice += total; 
-
-        // Lägg till produkten i cartItems-arrayen
-        cartItems.push({
-          productId: product.id,
-          title: product.title,
-          price: product.price,
-          amount: amount,
-          total: total
-        });
-      }
-      return createResponseSuccess({
-        //innehåller alla produkter
-        cart: cartItems,
-        //innehåller slutsummeringen
-        totalPrice: totalPrice
-      });
-  }catch(error) {
-    return createResponseError(500, "Varukorgen gick inte att hämta")
-  } 
-}
-
+//?
 async function completePurchase(userId) {
   try {
     const cart = await db.Cart.findOne({ where: { user_id: userId, payed: false } });
@@ -131,9 +133,8 @@ async function completePurchase(userId) {
   }
 }
 
-  module.exports = {
-    addProductToCart,
-    showProductsInCart,
-    removeProductFromCart,
-    completePurchase
-  };
+module.exports = {
+  addProductToCart,
+  removeProductFromCart,
+  completePurchase
+};
