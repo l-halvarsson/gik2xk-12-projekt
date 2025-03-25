@@ -1,23 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { getPopulatedCartForUser } from "../services/CartService";
 import { Button, Typography, Box } from "@mui/material";
+//import { useOutletContext } from "react-router-dom";
 
+function Cart({ userId }) { 
+  //const { userId } = useOutletContext(); 
+  console.log("Användar-ID i Cart:", userId);
 
-function Cart({ userId }) {
-    const [items, setItems] = useState([]);
-    const [total, setTotal] = useState(0);
+  const [items, setItems] = useState([]);
+  const [total, setTotal] = useState(0);
 
-    const fetchCart = async () => {
-        if (!userId) return;
-        try {
-          const cart = await getPopulatedCartForUser(userId);
-          setItems(cart);
-          const sum = cart.reduce((acc, item) => acc + item.price * item.amount, 0);
-          setTotal(sum);
-        } catch (err) {
-          console.error('Kunde inte hämta varukorg:', err);
-        }
-      };
+  const fetchCart = async () => {
+      if (!userId) return 
+      try {
+        const cart = await getPopulatedCartForUser(userId);
+        setItems(cart);
+        const sum = cart.reduce((acc, item) => acc + item.price * item.amount, 0);
+        setTotal(sum);
+      } catch (err) {
+        console.error('Kunde inte hämta varukorg:', err.response?.data || err.message || err);
+      }
+    };
 
       useEffect(() => {
         fetchCart();

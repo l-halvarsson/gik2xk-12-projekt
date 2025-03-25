@@ -51,6 +51,8 @@ async function addProductToCart(userId, productId, amount){
 
 //Hämta en användares senaste varukorg ink alla tillhörande produkter och deras antal
 async function getLatestCartForUser(userId) {
+  console.log(" Hämtar varukorg för user:", userId);
+
   try {
     const latestCart = await db.Cart.findOne({
       where: {
@@ -67,6 +69,9 @@ async function getLatestCartForUser(userId) {
         }
       ]
     });
+
+    console.log("🛒 Hittad varukorg:", latestCart);
+
 
     if (!latestCart) {
       return createResponseSuccess([]); // tom varukorg
@@ -136,5 +141,6 @@ async function completePurchase(userId) {
 module.exports = {
   addProductToCart,
   removeProductFromCart,
-  completePurchase
+  completePurchase,
+  getLatestCartForUser
 };

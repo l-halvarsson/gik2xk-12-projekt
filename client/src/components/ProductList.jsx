@@ -15,23 +15,19 @@ function ProductList() {
         fetchProducts();
     }, []);
 
-    return (
-        <>
-        
-
-            <Grid container spacing={2}>
-                {Array.isArray(products) && products.length > 0 ? (
-                    products.map((product) => (
-                        <Grid item xs={12} sm={6} md={4} key={product.id}>
-                            <ProductItemSmall product={product} />
-                        </Grid>
-                    ))
-                ) : (
-                    <p>Inga produkter hittades.</p>
-                )}
-            </Grid>
-            <img src="/whiteJumper.png" alt="Testbild" width={200} /> 
-        </>
+    return (      
+    
+        <Grid container spacing={2}>
+            {Array.isArray(products) && products.length > 0 ? (
+                products.map((product) => (
+                    <Grid item xs={12} sm={6} md={4} key={product.id}>
+                        <ProductItemSmall product={product} />
+                    </Grid>
+                ))
+            ) : (
+                <p>Inga produkter hittades.</p>
+            )}
+        </Grid>           
         
     );
 }

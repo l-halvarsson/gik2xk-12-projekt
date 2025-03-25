@@ -50,9 +50,19 @@ function ProductItemLarge({ product, userId, /*updateCart*/ }){
     <Typography variant="body1" gutterBottom>
       {product.description}
     </Typography>
-    <Button variant="contained" onClick={handleAdd}>
-      Lägg till i varukorg
-    </Button>
+    <Button
+  variant="contained"
+  onClick={handleAdd}
+  sx={{
+    backgroundColor: "#F5F5DC",
+    color: "gray",
+    "&:hover": {
+      backgroundColor: "#e0e0c7" // valfri hover-effekt
+    }
+  }}
+>
+  Lägg till i varukorg
+</Button>
   </CardContent>
 </Card>
   );

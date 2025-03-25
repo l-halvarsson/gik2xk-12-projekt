@@ -24,7 +24,7 @@ import { Avatar, TextField, Button, Dialog, DialogTitle, DialogContent, DialogAc
 import axios from "../services/api";
 import Cart from './Cart';
 
-function Navbar(){
+function Navbar({ userId, setUserId }){
     const [cartOpen, setCartOpen] = useState(false);
     function toggleCart(open) { 
         return () => {
@@ -41,13 +41,15 @@ function Navbar(){
 
 
     const [loginOpen, setLoginOpen] = useState(false);
-    const [userId, setUserId] = useState(localStorage.getItem("userId") || "");
+    //const [userId, setUserId] = useState(localStorage.getItem("userId") || "");
+
     const [userName, setUserName] = useState("");
     async function handleLogin() {
         try {
             const response = await axios.get(`/users/${userId}`);
             const user = response.data;
             localStorage.setItem("userId", userId);
+            setUserId(user.id);
             setUserName(user.firstName);
             setLoginOpen(false);
             alert("Inloggad som användare " + user.firstName);
@@ -126,7 +128,7 @@ function Navbar(){
             {/* Varukorgens sidopanel */}
             <Drawer anchor="right" open={cartOpen}  onClose={toggleCart(false)}>
                 <Box sx={{ width: 300, p: 2 }}>
-                    <Cart userId={userId} updateCart={updateCart} /> 
+                    <Cart userId={userId} /> 
                 </Box>
             </Drawer>
 

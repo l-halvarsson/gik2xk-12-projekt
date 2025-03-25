@@ -8,11 +8,8 @@ import RatingForm from "../components/RatingForm"; // Importera din Rating-kompo
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'; // Importera ikonen
 import Rating from "../components/Rating"; // Importera Rating-komponenten
 import { useOutletContext } from "react-router-dom"; //Tillagt precis
-const { userId } = useOutletContext(); // Hämtar userID från app.jsx
+
 //const userId = Number(localStorage.getItem("userId"));
-
-
-
 
 
 function ProductDetails() {
@@ -21,6 +18,7 @@ function ProductDetails() {
   const [loading, setLoading] = useState(true);
   const [averageRating, setAverageRating] = useState(null); // För att lagra medelbetyget
   const navigate = useNavigate(); // För att kunna navigera till föregående sida
+  const { userId } = useOutletContext(); // Hämtar userID från app.jsx
 
   useEffect(() => {
     // Hämta produktdetaljer
