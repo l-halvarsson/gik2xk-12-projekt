@@ -65,7 +65,7 @@ function ProductDetails() {
       {/* Visa produkt + all info */}
       <ProductItemLarge 
         product={product}
-        userId={userId}
+        userId={userId} // Ändrade till detta och det 
         //updateCart={updateCart}
       />
 
