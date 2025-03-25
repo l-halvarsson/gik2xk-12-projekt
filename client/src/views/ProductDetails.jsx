@@ -7,6 +7,13 @@ import axios from 'axios';
 import RatingForm from "../components/RatingForm"; // Importera din Rating-komponent
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'; // Importera ikonen
 import Rating from "../components/Rating"; // Importera Rating-komponenten
+import { useOutletContext } from "react-router-dom"; //Tillagt precis
+const { userId } = useOutletContext(); // Hämtar userID från app.jsx
+//const userId = Number(localStorage.getItem("userId"));
+
+
+
+
 
 function ProductDetails() {
   const { id } = useParams(); // få produkt-ID från URL
@@ -56,7 +63,11 @@ function ProductDetails() {
         Tillbaka
       </Button>
       {/* Visa produkt + all info */}
-      <ProductItemLarge product={product} />
+      <ProductItemLarge 
+        product={product}
+        userId={userId}
+        //updateCart={updateCart}
+      />
 
       {/* Visa medelbetyget genom Rating-komponenten */}
       <Rating productId={id} />
@@ -68,5 +79,3 @@ function ProductDetails() {
 }
 
 export default ProductDetails;
-
-

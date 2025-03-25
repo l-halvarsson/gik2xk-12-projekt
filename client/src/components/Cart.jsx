@@ -1,61 +1,45 @@
 import React, { useEffect, useState } from "react";
-import { getAllProductsInCart } from "../services/CartService";
-import { addRating } from "../services/ProductService";
+import { getPopulatedCartForUser } from "../services/CartService";
 import { Button, Typography, Box } from "@mui/material";
 
 
-function Cart({ userId, updateCart}) {
-    const [cartItems, setCartItems] = useState([]);
-    const [totalPrice, setTotalPrice] = useState(0);
+function Cart({ userId }) {
+    const [items, setItems] = useState([]);
+    const [total, setTotal] = useState(0);
 
-    const fetchCartItems = async () => {
+    const fetchCart = async () => {
         if (!userId) return;
         try {
-          const items = await getAllProductsInCart(userId);
-          setCartItems(items);
-    
-          const total = items.reduce(
-            (sum, item) => sum + item.price * item.amount,
-            0
-          );
-          setTotalPrice(total);
-        } catch (error) {
-          console.error("Ett fel uppstod vid hämtning av varukorgen:");
+          const cart = await getPopulatedCartForUser(userId);
+          setItems(cart);
+          const sum = cart.reduce((acc, item) => acc + item.price * item.amount, 0);
+          setTotal(sum);
+        } catch (err) {
+          console.error('Kunde inte hämta varukorg:', err);
         }
       };
 
       useEffect(() => {
-        fetchCartItems();
-      }, [userId, updateCart]);
-    
+        fetchCart();
+      }, [userId]);
 
     return (
         <Box>
-            {cartItems.length === 0 ? (
-                <Typography>Din varukorg är tom</Typography>
+            {items.length === 0 ? (
+                <Typography>Varukorgen är tom.</Typography>
             ) : (
-                <Box>
-      {cartItems.length === 0 ? (
-        <Typography>Din varukorg är tom</Typography>
-      ) : (
-        <Box>
-          {cartItems.map((item, index) => (
-            <Box key={index} sx={{ mb: 1 }}>
-              <Typography variant="body1">
-                {item.title} – {item.amount} st – {item.price * item.amount} SEK
-              </Typography>
-            </Box>
-          ))}
-
-          <Divider sx={{ my: 2 }} />
-          <Typography variant="h6">Totalt: {totalPrice} SEK</Typography>
-          <Button variant="contained" fullWidth sx={{ mt: 2 }}>
-            Gå till kassan
-          </Button>
-        </Box>
-      )}
-    </Box>
-            )}
+            <>
+            {items.map((item, i) => (
+                <Typography key={i}>
+                {item.title} – {item.amount} st – {item.price * item.amount} kr
+                </Typography>
+            ))}
+            <Typography sx={{ mt: 2 }}><strong>Summa: {total} kr</strong></Typography>
+            <Button fullWidth variant="contained" sx={{ mt: 2 }}>
+                Gå till kassan
+            </Button>
+            </>
+        )}  
         </Box>
     );
 }

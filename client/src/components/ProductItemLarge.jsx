@@ -3,56 +3,58 @@
 
 import { Card, CardContent, CardMedia, Typography, Box, Button } from "@mui/material";
 import placeholderImage from "../assets/placeholder.png";
-import { addProductToCart } from "../services/CartService"; 
+import { addProductToCart } from '../services/CartService';
 
 
 
-
-function ProductItemLarge({ product, userId, updateCart }){
-  if (!product) return null;
-
-
-  const handleAddToCart = async () => {
-
-    
-    if (!userId) {
-      alert("Du måste vara inloggad för att lägga till produkter i varukorgen.");
-      return;
-  }
-
-
+function ProductItemLarge({ product, userId, /*updateCart*/ }){
+  const handleAdd = async () => {
     try {
-      const amount = 1; // ???
-      await addProductToCart(userId, product.id, amount); // Anropa service-funktionen
-      alert(`${product.title} har lagts till i din varukorg!`);
-      updateCart();
-    } catch (error) {
-      alert("Det gick inte att lägga till produkten i varukorgen.");
+      await addProductToCart(userId, product.id, 1);
+      //if (updateCart) updateCart();
+    } catch (err) {
+      console.error('Fel vid lägg till i varukorg:', err);
+      alert('Kunde inte lägga till i varukorg.');
     }
   };
 
-
   return (
-    <Card sx={{ maxWidth: 800, margin: "auto", mt: 4 }}>
-      <CardMedia
-        component="img"
-        height="400"
-        image={product.imageUrl || placeholderImage}
-        alt={`Bild på ${product.title}`}
-      />
-      <CardContent>
-        <Typography variant="h4" fontWeight="bold" gutterBottom>
-          {product.title}
-        </Typography>
-        <Typography variant="h6" color="text.secondary" gutterBottom>
-          {product.price} SEK
-        </Typography>
-        <Typography variant="body1">{product.description}</Typography>
-        <Button variant="contained" color="primary" onClick={handleAddToCart}>
-          Lägg till i varukorg
-        </Button>
-      </CardContent>
-    </Card>
+<Card
+  sx={{
+    maxWidth: 700,
+    margin: "auto",
+    mt: 4,
+    display: "flex",         // Gör layouten horisontell
+    flexDirection: "row",    // Lägg bild till vänster, innehåll till höger
+    alignItems: "center",    // Vertikal centrering (valfritt)
+  }}
+>
+  <CardMedia
+    component="img"
+    sx={{
+      width: 300,            // Bestäm bredd på bilden
+      height: "auto",
+      objectFit: "cover",
+    }}
+    image={product.imageUrl || placeholderImage}
+    alt={`Bild på ${product.title}`}
+  />
+
+  <CardContent sx={{ flex: 1 }}>
+    <Typography variant="h4" fontWeight="bold" gutterBottom>
+      {product.title}
+    </Typography>
+    <Typography variant="h6" color="text.secondary" gutterBottom>
+      {product.price} SEK
+    </Typography>
+    <Typography variant="body1" gutterBottom>
+      {product.description}
+    </Typography>
+    <Button variant="contained" onClick={handleAdd}>
+      Lägg till i varukorg
+    </Button>
+  </CardContent>
+</Card>
   );
 }
 

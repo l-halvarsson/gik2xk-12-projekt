@@ -1,123 +1,151 @@
 import React, { useState } from 'react';
 import { TextField, Button, Box, Typography, CircularProgress, Snackbar } from '@mui/material';
-import axios from 'axios';
+import { create, update, getOne, remove } from '../services/productService'; // Importera backend-funktionerna för produkter
 
 function AdminPage() {
-  const [product, setProduct] = useState({ title: '', description: '', price: '' });
-  const [image, setImage] = useState(null); // För att hålla koll på vald bild
-  const [isLoading, setIsLoading] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [product, setProduct] = useState({ title: '', description: '', price: '', id: '' });
+    const [isLoading, setIsLoading] = useState(false);
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
 
-  // Hantera ändringar i produktinformation
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setProduct((prev) => ({ ...prev, [name]: value }));
-  };
+    // Hantera formulärändringar
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setProduct((prev) => ({ ...prev, [name]: value }));
+    };
 
-  // Hantera bilduppladdning
-  const handleImageChange = (e) => {
-    setImage(e.target.files[0]);
-  };
+    // Skapa en ny produkt
+    const handleCreateProduct = async () => {
+        setIsLoading(true);
+        try {
+            const response = await create(product);  // Använd backend-funktion för att skapa produkt
+            setSnackbarMessage('Produkten har skapats');
+            setSnackbarOpen(true);
+            setProduct({ title: '', description: '', price: '', id: '' }); // Rensa formuläret
+        } catch (error) {
+            setSnackbarMessage('Det gick inte att skapa produkten');
+            setSnackbarOpen(true);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-  // Skapa produkt (inklusive bild)
-  const handleCreateProduct = async () => {
-    setIsLoading(true);
+    // Hämta produktinformation för att uppdatera
+    const handleGetProduct = async () => {
+        setIsLoading(true);
+        try {
+            const response = await getOne(product.id); // Hämta produktdata från backend
+            if (response) {
+                setProduct(response); // Fyll i formuläret med produktdata
+            } else {
+                setSnackbarMessage('Produkten finns inte');
+                setSnackbarOpen(true);
+            }
+        } catch (error) {
+            setSnackbarMessage('Kunde inte hämta produktinformation');
+            setSnackbarOpen(true);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-    // Skapa en FormData för att skicka både produktdata och bild
-    const formData = new FormData();
-    formData.append('title', product.title);
-    formData.append('description', product.description);
-    formData.append('price', product.price);
+    // Uppdatera en produkt
+    const handleUpdateProduct = async () => {
+        setIsLoading(true);
+        try {
+            const response = await update(product); // Uppdatera produkt via backend
+            setSnackbarMessage('Produkten har uppdaterats');
+            setSnackbarOpen(true);
+        } catch (error) {
+            setSnackbarMessage('Det gick inte att uppdatera produkten');
+            setSnackbarOpen(true);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-    // Lägg till bilden om den finns
-    if (image) {
-      formData.append('image', image);
-    }
+    // Radera en produkt
+    const handleDeleteProduct = async () => {
+        setIsLoading(true);
+        try {
+            const response = await remove(product.id); // Ta bort produkt via backend
+            setSnackbarMessage('Produkten har tagits bort');
+            setSnackbarOpen(true);
+            setProduct({ title: '', description: '', price: '', id: '' }); // Rensa formuläret
+        } catch (error) {
+            setSnackbarMessage('Det gick inte att radera produkten');
+            setSnackbarOpen(true);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-    try {
-      // Skicka POST-förfrågan till backend för att skapa produkten
-      const response = await axios.post('http://localhost:4000/products/create', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+    // Hantera stängning av snackbar
+    const handleCloseSnackbar = () => {
+        setSnackbarOpen(false);
+    };
 
-      setSnackbarMessage('Produkten har skapats!');
-      setSnackbarOpen(true);
-      setProduct({ title: '', description: '', price: '' }); // Rensa formuläret
-      setImage(null); // Rensa vald bild
-    } catch (error) {
-      setSnackbarMessage('Det gick inte att skapa produkten.');
-      setSnackbarOpen(true);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    return (
+        <Box sx={{ padding: 3 }}>
+            <Typography variant="h4" gutterBottom>Skapa, Uppdatera eller Ta bort Produkt</Typography>
 
-  // Stäng snackbar
-  const handleCloseSnackbar = () => {
-    setSnackbarOpen(false);
-  };
+            {/* Formulär för att skapa eller uppdatera produkt */}
+            <TextField
+                label="Produkt-ID"
+                name="id"
+                value={product.id}
+                onChange={handleChange}
+                fullWidth
+                sx={{ marginBottom: 2 }}
+            />
+            <Button variant="contained" color="primary" onClick={handleGetProduct} disabled={isLoading}>
+                {isLoading ? <CircularProgress size={24} /> : 'Hämta produkt'}
+            </Button>
 
-  return (
-    <Box sx={{ padding: 3 }}>
-      <Typography variant="h4" gutterBottom>Skapa Produkt</Typography>
+            <TextField
+                label="Produktnamn"
+                name="title"
+                value={product.title}
+                onChange={handleChange}
+                fullWidth
+                sx={{ marginBottom: 2 }}
+            />
+            <TextField
+                label="Beskrivning"
+                name="description"
+                value={product.description}
+                onChange={handleChange}
+                fullWidth
+                sx={{ marginBottom: 2 }}
+            />
+            <TextField
+                label="Pris"
+                name="price"
+                value={product.price}
+                onChange={handleChange}
+                fullWidth
+                sx={{ marginBottom: 2 }}
+            />
 
-      {/* Formulär för att skapa en produkt */}
-      <TextField
-        label="Produktnamn"
-        name="title"
-        value={product.title}
-        onChange={handleChange}
-        fullWidth
-        sx={{ marginBottom: 2 }}
-      />
-      <TextField
-        label="Beskrivning"
-        name="description"
-        value={product.description}
-        onChange={handleChange}
-        fullWidth
-        sx={{ marginBottom: 2 }}
-      />
-      <TextField
-        label="Pris"
-        name="price"
-        value={product.price}
-        onChange={handleChange}
-        fullWidth
-        sx={{ marginBottom: 2 }}
-      />
+            {/* Knapp för att skapa eller uppdatera produkt */}
+            <Button variant="contained" color="primary" onClick={product.id ? handleUpdateProduct : handleCreateProduct} disabled={isLoading}>
+                {isLoading ? <CircularProgress size={24} /> : product.id ? 'Uppdatera produkt' : 'Skapa produkt'}
+            </Button>
 
-      {/* Filinmatning för att ladda upp en bild */}
-      <input
-        type="file"
-        onChange={handleImageChange}
-        accept="image/*"
-        style={{ marginBottom: '16px' }}
-      />
+            {/* Knapp för att ta bort produkt */}
+            <Button variant="contained" color="secondary" onClick={handleDeleteProduct} disabled={isLoading || !product.id}>
+                {isLoading ? <CircularProgress size={24} /> : 'Ta bort produkt'}
+            </Button>
 
-      {/* Knapp för att skapa produkten */}
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleCreateProduct}
-        disabled={isLoading}
-        sx={{ marginBottom: 2 }}
-      >
-        {isLoading ? <CircularProgress size={24} /> : 'Skapa Produkt'}
-      </Button>
-
-      {/* Snackbar för att visa resultatmeddelanden */}
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-        message={snackbarMessage}
-      />
-    </Box>
-  );
+            {/* Snackbar för att visa meddelanden */}
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={6000}
+                onClose={handleCloseSnackbar}
+                message={snackbarMessage}
+            />
+        </Box>
+    );
 }
 
 export default AdminPage;
