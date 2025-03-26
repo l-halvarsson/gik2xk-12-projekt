@@ -7,10 +7,12 @@ import { addProductToCart } from '../services/CartService';
 
 
 
-function ProductItemLarge({ product, userId, /*updateCart*/ }){
+function ProductItemLarge({ product, userId, setCartCount }){
+
   const handleAdd = async () => {
     try {
-      await addProductToCart(userId, product.id, 1);
+      const {count} = await addProductToCart(userId, product.id, 1);
+      setCartCount(count);
       //if (updateCart) updateCart();
     } catch (err) {
       console.error('Fel vid lägg till i varukorg:', err);

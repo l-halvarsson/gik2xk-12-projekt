@@ -20,6 +20,7 @@ function ProductDetails() {
   const navigate = useNavigate(); // För att kunna navigera till föregående sida
   const { userId } = useOutletContext(); // Hämtar userID från app.jsx
 
+
   useEffect(() => {
     // Hämta produktdetaljer
     getOne(id).then((data) => {

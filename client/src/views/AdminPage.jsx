@@ -1,8 +1,6 @@
-import React, { useState } from 'react';
-import { TextField, Button, Box, Typography, CircularProgress, Snackbar } from '@mui/material';
-import { create, update, getOne, remove } from '../services/productService'; // Importera backend-funktionerna för produkter
-import ProductList from "../components/AdminForm";
-
+import {react} from 'react';
+import {Box, Typography} from '@mui/material';
+import AdminForm from "../components/AdminForm"; 
 function AdminPage() {
     
     return (
@@ -12,7 +10,6 @@ function AdminPage() {
             </Typography>
             <AdminForm /> 
         </Box>
-    
     );
 }
 

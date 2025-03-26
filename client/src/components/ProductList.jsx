@@ -28,7 +28,6 @@ function ProductList() {
                 <p>Inga produkter hittades.</p>
             )}
         </Grid>           
-        
     );
 }
 
