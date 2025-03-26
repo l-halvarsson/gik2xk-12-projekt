@@ -16,6 +16,7 @@ import {
     Badge
 } from "@mui/material";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import LogoutIcon from "@mui/icons-material/Logout";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import HiveOutlinedIcon from "@mui/icons-material/HiveOutlined";
@@ -70,7 +71,14 @@ function Navbar({ userId, setUserId, setCartCount, cartCount }){
           localStorage.removeItem("userName"); //  Ta bort namnet om det var fel
         }
       }
-      
+      // Hanterar  utlogg TILLAGT L
+        const handleLogout = () => {
+        localStorage.removeItem("userId");
+        localStorage.removeItem("userName");
+        setUserId("");
+        setUserName("");
+        setCartCount(0);
+      };
     
     const navigate = useNavigate();
     function goToAdmin() {
@@ -87,7 +95,7 @@ function Navbar({ userId, setUserId, setCartCount, cartCount }){
             getPopulatedCartForUser(userId).then((cartData) => {
                 console.log("Cart data:", cartData);
                 const count = cartData.reduce((acc, item) => acc + item.amount, 0);
-                //setCartCount(count); // Uppdatera cartCount när varukorgen hämtas
+                setCartCount(count); // Uppdatera cartCount när varukorgen hämtas
             });
         }
     }, [userId]);
@@ -100,6 +108,7 @@ function Navbar({ userId, setUserId, setCartCount, cartCount }){
           console.error('Fel vid att lägga till i varukorgen:', error);
         }
       }
+      
 
 
     return (
@@ -136,6 +145,7 @@ function Navbar({ userId, setUserId, setCartCount, cartCount }){
 
 
                 <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+
                 {/* Avatar eller inloggningsikon */}
                 {userName ? (
                     <Tooltip title={`Gå till admin (${userName})`}>
@@ -153,6 +163,15 @@ function Navbar({ userId, setUserId, setCartCount, cartCount }){
                         <AccountCircleIcon/>
                     </IconButton>
                 )}
+                {/* Logga ut */}
+                {userName && (
+                <Tooltip title="Logga ut">
+                    <IconButton onClick={handleLogout}>
+                    <LogoutIcon />
+                    </IconButton>
+                </Tooltip>
+                )}
+
 
                 {/* Varukorg */}
                 <span>|</span>
@@ -169,7 +188,7 @@ function Navbar({ userId, setUserId, setCartCount, cartCount }){
             {/* Varukorgens sidopanel */}
             <Drawer anchor="right" open={cartOpen}  onClose={toggleCart(false)}>
                 <Box sx={{ width: 300, p: 2 }}>
-                    <Cart userId={userId} /> 
+                    <Cart userId={userId} setCartCount={setCartCount} /> 
                 </Box>
             </Drawer>
 

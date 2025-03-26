@@ -13,7 +13,7 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import placeholderImage from "../assets/placeholder.png";
-import { getPopulatedCartForUser, completePurchaseForUser } from "../services/CartService";
+import { getPopulatedCartForUser, completePurchaseForUser, increaseProductAmount, decreaseProductAmount} from "../services/CartService";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 
 
@@ -24,29 +24,69 @@ function Cart({ userId, setCartCount }) {
 
   const [items, setItems] = useState([]);
   const [total, setTotal] = useState(0);
+  const [userName, setUserName] = useState(""); // TILLAGT + useEffect under
 
-  const fetchCart = async () => {
-      if (!userId) return 
-      try {
-        const cart = await getPopulatedCartForUser(userId);
-        setItems(cart);
-        const sum = cart.reduce((acc, item) => acc + item.price * item.amount, 0);
-        setTotal(sum);
-        setCartCount(cart.reduce((acc, item) => acc + item.amount, 0));
-      } catch (err) {
-        console.error('Kunde inte hämta varukorg:', err.response?.data || err.message || err);
-      }
-    };
+  useEffect(() => {
+    const storedName = localStorage.getItem("userName");
+    if (storedName) {
+      setUserName(storedName);
+    }
+  }, []);
+  
 
-      useEffect(() => {
-        fetchCart();
-      }, [userId]);
+const fetchCart = async () => {
+    if (!userId) return 
+    try {
+      const cart = await getPopulatedCartForUser(userId);
+      setItems(cart);
+      const sum = cart.reduce((acc, item) => acc + item.price * item.amount, 0);
+      setTotal(sum);
+      setCartCount(cart.reduce((acc, item) => acc + item.amount, 0));
+    } catch (err) {
+      console.error('Kunde inte hämta varukorg:', err.response?.data || err.message || err);
+    }
+};
+
+//hantera ökning
+const handleAddedAmount = async (userId, productId) => {
+  try {
+    await increaseProductAmount(userId, productId);
+    //osäker -????
+    fetchCart(); // hämta den uppdaterade varukorgen
+  } catch (err) {
+    console.error("Kunde inte öka antal:", err);
+  }
+};
+//hanter minskning
+//hantera ökning
+const handleReducedAmount = async (userId, productId) => {
+  try {
+    await decreaseProductAmount(userId, productId);
+    //osäker -????
+    fetchCart(); // hämta den uppdaterade varukorgen
+  } catch (err) {
+    console.error("Kunde inte minska antal:", err);
+  }
+};
+
+
+
+useEffect(() => {
+  fetchCart();
+}, [userId]);
 
     return (
       <Box sx={{ px: 2, py: 1, width: "100%", maxWidth: 360 }}>
       <Typography variant="h5" sx={{ fontWeight: "bold", mb: 1 }}>
-        kassa
+        Kassa
       </Typography>
+
+      {userName && (
+      <Typography variant="subtitle1" sx={{ mb: 2 }}>
+        Hej, {userName} 👋
+      </Typography>
+)}
+
       <Typography variant="body2" sx={{ mb: 2, color: "gray" }}>
         du har fri frakt
       </Typography>
@@ -79,13 +119,13 @@ function Cart({ userId, setCartCount }) {
                   {item.price} SEK
                 </Typography>
                 <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
-                  <IconButton size="small">
-                    <RemoveIcon />
-                  </IconButton>
-                  <Typography sx={{ mx: 1 }}>{item.amount}</Typography>
-                  <IconButton size="small">
-                    <AddIcon />
-                  </IconButton>
+                <IconButton size="small" onClick={handleReducedAmount}> 
+                  <RemoveIcon />
+                </IconButton>
+                <Typography sx={{ mx: 1 }}>{item.amount}</Typography>
+                <IconButton size="small" onClick={handleAddedAmount}>
+                  <AddIcon />
+                </IconButton>
                 </Box>
               </CardContent>
             </Card>

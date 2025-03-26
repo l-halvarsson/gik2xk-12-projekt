@@ -13,8 +13,6 @@ router.post('/addProduct', async (req, res) => {
 });
 
 
-
-
 router.get('/', (req, res) => {
     db.product.findAll().then((result) => {
     res.send(result);
@@ -25,23 +23,21 @@ router.put('/', (req, res) => {
     res.send('Put products');
 });
 
- 
 
 
 // Ta bort en produkt från varukorgen
-router.delete('/removeProduct', (req, res) => {
+router.delete('/removeProduct', async (req, res) => {
     const { userId, productId } = req.body;
 
-    cartService.removeProductFromCart(userId, productId)
-        .then(result => {
-            res.status(result.status).json(result.data);
-        })
-        .catch(error => {
-            res.status(500).json({ error: "Ett fel uppstod vid borttagning av produkt från varukorgen", details: error.message });
-        });
-});  
+    try {
+        const result = await cartService.removeProductFromCart(userId, productId);
+        res.status(result.status).json(result.data);
+    } catch (error) {
+        res.status(500).json(error.data);
+    }
+}); 
 
-//Simulera ett köp        Skapad idag
+//Simulera ett köp        
 router.post('/checkout', (req, res) => {
     const {userId} = req.body;
 
@@ -53,5 +49,12 @@ router.post('/checkout', (req, res) => {
         res.status(500).json({error: "Ett fel uppstod vid genomförandet av köpet", details: error.message});
     });
 });
+
+//Uppdatera produkt antal TILLAGT // Then()??
+router.put('/updateProduct', async (req, res) => {
+    const { userId, productId, requeredAmount } = req.body;
+    const result = await cartService.updateAmount(userId, productId, requeredAmount );
+    res.status(result.status).json(result.data);
+  });
 
 module.exports = router;

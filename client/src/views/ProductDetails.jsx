@@ -18,7 +18,7 @@ function ProductDetails() {
   const [loading, setLoading] = useState(true);
   const [averageRating, setAverageRating] = useState(null); // För att lagra medelbetyget
   const navigate = useNavigate(); // För att kunna navigera till föregående sida
-  const { userId } = useOutletContext(); // Hämtar userID från app.jsx
+  const { userId, setCartCount } = useOutletContext(); // Hämtar userID från app.jsx
 
 
   useEffect(() => {
@@ -66,6 +66,7 @@ function ProductDetails() {
         product={product}
         userId={userId} // Ändrade till detta och det 
         //updateCart={updateCart}
+        setCartCount={setCartCount}
       />
 
       {/* Visa medelbetyget genom Rating-komponenten */}

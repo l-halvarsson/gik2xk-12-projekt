@@ -29,31 +29,31 @@ export async function getAllProducts() {
       }
   }
       
-      export async function create(product) {
-        try {
-          const response = await axios.post('/products', product);
-          if (response.status === 200) return response.data;
-          else {
-            console.log(response.data);
-            return null;
-          }
-        } catch (e) {
-          e?.response ? console.log(e.response.data) : console.log(e);
-        }
+  export async function create(product) {
+    try {
+      const response = await axios.post('/products', product);
+      if (response.status >= 200 && response.status < 300) return response.data;
+      else {
+        console.log(response.data);
+        return null;
+      }
+    } catch (e) {
+      e?.response ? console.log(e.response.data) : console.log(e);
     }
+  }
 
-      export async function update(product) {
-        try {
-          const response = await axios.put('/products', product);
-          if (response.status === 200) return response.data;
-          else {
-            console.log(response.data);
-            return null;
-          }
-        } catch (e) {
-          e?.response ? console.log(e.response.data) : console.log(e);
-        }
+export async function update(product) {
+  try {
+    const response = await axios.put(`/products/${product.id}`, product);
+    if (response.status >= 200 && response.status < 300) return response.data;
+    else {
+      console.log(response.data);
+      return null;
     }
+  } catch (e) {
+    e?.response ? console.log(e.response.data) : console.log(e);
+  }
+}
 
       export async function remove(id) {
         try {

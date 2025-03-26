@@ -92,33 +92,22 @@ async function getLatestCartForUser(userId) {
 
 
 
-
-
-
-
-
-
-// Ta bort produkt i varukorg
 async function removeProductFromCart(userId, productId) {
-  try {
-      const cart = await db.Cart.findOne({ where: { user_id: userId } });
+  const cartItem = await db.cartItem.findOne({ where: { userId, productId } });
 
-      if (!cart) {
-          return createResponseError(404, "Varukorgen hittades inte.");
-      }
-      const deletedRows = await db.CartRow.destroy({
-          where: { cart_id: cart.id, product_id: productId }
-      });
-
-      if (deletedRows === 0) {
-          return createResponseError(404, "Produkten fanns inte i varukorgen.");
-      }
-
-      return createResponseSuccess({ message: "Produkten har tagits bort från varukorgen." });
-  } catch (error) {
-      return createResponseError(500, "Ett fel uppstod vid borttagning av produkt från varukorgen", error.message);
+  if (!cartItem) {
+      throw new Error("Produkten finns inte i varukorgen");
   }
+
+  if (cartItem.amount > 1) {
+      await cartItem.update({ amount: cartItem.amount - 1 });
+  } else {
+      await cartItem.destroy(); // Om antal är 1, ta bort produkten helt
+  }
+
+  return { status: 200, data: { message: "Produkten uppdaterad i varukorgen" } };
 }
+
 //?
 // Simulera ett köp
 async function completePurchase(userId) {
@@ -144,9 +133,42 @@ async function completePurchase(userId) {
   }
 }
 
+// Uppdatera TILLAGT
+async function updateAmount(userId, productId , requeredAmount) {
+  try {
+    const cart = await db.Cart.findOne({ where: { user_id: userId, payed: false } });
+    if (!cart) return createResponseError(404, "Varukorg saknas");
+
+    const row = await db.CartRow.findOne({
+      where: { cart_id: cart.id, product_id: productId }
+    });
+
+    if (!row) return createResponseError(404, "Produkt saknas i varukorgen");
+
+    //osäker om db. ???
+    const newAmount = CartRow.amount + requeredAmount; 
+
+    if (newAmount < 1) {
+      await row.destroy(); // ta bort raden helt om mängden är < 1
+      return createResponseSuccess({ message: "Produkten togs bort från varukorgen" });
+    }else {
+      
+     await row.update({ amount: newAmount });
+    }
+
+    return createResponseSuccess({ message: "Antal uppdaterat" });
+
+  } catch (err) {
+    return createResponseError(500, "Fel vid uppdatering av antal", err.message);
+  }
+}
+
+
+
 module.exports = {
   addProductToCart,
   removeProductFromCart,
   completePurchase,
-  getLatestCartForUser
+  getLatestCartForUser,
+  updateAmount
 };

@@ -7,18 +7,18 @@ import { addProductToCart } from '../services/CartService';
 
 
 
-function ProductItemLarge({ product, userId, setCartCount }){
+function ProductItemLarge({ product, userId, setCartCount}){
 
   const handleAdd = async () => {
     try {
-      const {count} = await addProductToCart(userId, product.id, 1);
-      setCartCount(count);
-      //if (updateCart) updateCart();
+      await addProductToCart(userId, product.id, 1);
+      window.location.reload(); // Laddar om sidan
     } catch (err) {
       console.error('Fel vid lägg till i varukorg:', err);
       alert('Kunde inte lägga till i varukorg.');
     }
   };
+  
 
   return (
 <Card

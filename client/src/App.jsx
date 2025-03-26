@@ -12,14 +12,16 @@ function App() {
   const [cartCount, setCartCount] = useState(0); // Lägg till definiering av cartCount
   return (
     <>
-      <Navbar userId={userId} setUserId={setUserId} setCartCount={setCartCount}/> 
+      <Navbar userId={userId} setUserId={setUserId} setCartCount={setCartCount} cartCount={cartCount}/> 
+      
+
       <Container
   sx={{ mt: 0, bgcolor: "#F6F5F0", padding: 0 }}
   maxWidth={false}           // ← gör att den fyller hela skärmen
   disableGutters             // ← tar bort padding inuti Container
   component="main"
 >
-        <Outlet context={{ userId }}/>  
+        <Outlet context={{ userId, setCartCount }}/>  
       </Container> 
     </>
   );

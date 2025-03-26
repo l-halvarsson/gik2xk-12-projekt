@@ -1,171 +1,72 @@
-import {react} from 'react';
-import {
-    TextField,
-    Button,
-    Box,
-    Typography,
-    CircularProgress,
-    Snackbar,
-    Stack
-} from '@mui/material';
 
-import {
-    create,
-    update,
-    getOne,
-    remove
-} from '../services/ProductService';
-  
+import React, { useEffect, useState } from 'react';
+import { TextField, Button, Box, Typography } from '@mui/material';
 
-function AdminForm(){
-    const [product, setProduct] = useState({ title: '', description: '', price: '', id: '' });
-    const [isLoading, setIsLoading] = useState(false);
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
-    const [snackbarMessage, setSnackbarMessage] = useState('');
+function AdminForm({ product, onCreate, onUpdate, onClear }) {
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    price: '',
+    imageUrl: ''
+  });
 
-    // Hantera formulärändringar
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setProduct((prev) => ({ ...prev, [name]: value }));
-    };
+  useEffect(() => {
+    if (product) {
+      setFormData({
+        title: product.title || '',
+        description: product.description || '',
+        price: product.price || '',
+        imageUrl: product.imageUrl || ''
+      });
+    } else {
+      setFormData({
+        title: '',
+        description: '',
+        price: '',
+        imageUrl: ''
+      });
+    }
+  }, [product]);
 
-    // Skapa en ny produkt
-    const handleCreateProduct = async () => {
-        setIsLoading(true);
-        try {
-            const response = await create(product);  // Använd backend-funktion för att skapa produkt
-            setSnackbarMessage('Produkten har skapats');
-            setSnackbarOpen(true);
-            setProduct({ title: '', description: '', price: '', id: '' }); // Rensa formuläret
-        } catch (error) {
-            setSnackbarMessage('Det gick inte att skapa produkten');
-            setSnackbarOpen(true);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-    // Hämta produktinformation för att uppdatera
-    const handleGetProduct = async () => {
-        setIsLoading(true);
-        try {
-            const response = await getOne(product.id); // Hämta produktdata från backend
-            if (response) {
-                setProduct(response); // Fyll i formuläret med produktdata
-            } else {
-                setSnackbarMessage('Produkten finns inte');
-                setSnackbarOpen(true);
-            }
-        } catch (error) {
-            setSnackbarMessage('Kunde inte hämta produktinformation');
-            setSnackbarOpen(true);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+  const handleSubmit = () => {
+    const parsed = { ...formData, price: parseFloat(formData.price) };
+    if (product && product.id) {
+      onUpdate(product.id, parsed);
+    } else {
+      onCreate(parsed);
+    }
+  };
 
-    // Uppdatera en produkt
-    const handleUpdateProduct = async () => {
-        setIsLoading(true);
-        try {
-            const response = await update(product); // Uppdatera produkt via backend
-            setSnackbarMessage('Produkten har uppdaterats');
-            setSnackbarOpen(true);
-        } catch (error) {
-            setSnackbarMessage('Det gick inte att uppdatera produkten');
-            setSnackbarOpen(true);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+  return (
+    <Box sx={{ mb: 4 }}>
+      <Typography variant="h5" gutterBottom>
+        {product?.id ? "Uppdatera produkt" : "Skapa ny produkt"}
+      </Typography>
 
-    // Radera en produkt
-    const handleDeleteProduct = async () => {
-        setIsLoading(true);
-        try {
-            const response = await remove(product.id); // Ta bort produkt via backend
-            setSnackbarMessage('Produkten har tagits bort');
-            setSnackbarOpen(true);
-            setProduct({ title: '', description: '', price: '', id: '' }); // Rensa formuläret
-        } catch (error) {
-            setSnackbarMessage('Det gick inte att radera produkten');
-            setSnackbarOpen(true);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+      <TextField label="Titel" name="title" value={formData.title} onChange={handleChange} fullWidth sx={{ mb: 2 }} />
+      <TextField label="Beskrivning" name="description" value={formData.description} onChange={handleChange} fullWidth sx={{ mb: 2 }} />
+      <TextField label="Pris" name="price" value={formData.price} onChange={handleChange} fullWidth sx={{ mb: 2 }} />
+      <TextField label="Bild-URL" name="imageUrl" value={formData.imageUrl} onChange={handleChange} fullWidth sx={{ mb: 2 }} />
 
-    // Hantera stängning av snackbar
-    const handleCloseSnackbar = () => {
-        setSnackbarOpen(false);
-    };
-
-
-    return (
-        <Box sx={{ padding: 3 }}>
-            <Typography variant="h4" gutterBottom>Skapa, Uppdatera eller Ta bort Produkt</Typography>
-
-            {/* Formulär för att skapa eller uppdatera produkt */}
-            <TextField
-                label="Produkt-ID"
-                name="id"
-                value={product.id}
-                onChange={handleChange}
-                fullWidth
-                sx={{ marginBottom: 2 }}
-            />
-            {/* Knapp för att hämta produkt med ID */}
-            <Button variant="contained" color="primary" onClick={handleGetProduct} disabled={isLoading}>
-                {isLoading ? <CircularProgress size={24} /> : 'Hämta produkt'}
-            </Button>
-
-            <TextField
-                label="Produktnamn"
-                name="title"
-                value={product.title}
-                onChange={handleChange}
-                fullWidth
-                sx={{ marginBottom: 2 }}
-            />
-            <TextField
-                label="Beskrivning"
-                name="description"
-                value={product.description}
-                onChange={handleChange}
-                fullWidth
-                sx={{ marginBottom: 2 }}
-            />
-            <TextField
-                label="Pris"
-                name="price"
-                value={product.price}
-                onChange={handleChange}
-                fullWidth
-                sx={{ marginBottom: 2 }}
-            />
-
-            {/* Knapp för att skapa eller uppdatera produkt */}
-            <Button variant="contained" color="primary" onClick={product.id ? handleUpdateProduct : handleCreateProduct} disabled={isLoading}>
-                {isLoading ? <CircularProgress size={24} /> : product.id ? 'Uppdatera produkt' : 'Skapa produkt'}
-            </Button>
-
-            {/* Knapp för att ta bort produkt */}
-            <Button variant="contained" color="secondary" onClick={handleDeleteProduct} disabled={isLoading || !product.id}>
-                {isLoading ? <CircularProgress size={24} /> : 'Ta bort produkt'}
-            </Button>
-
-            {/* Snackbar för att visa meddelanden */}
-            <Snackbar
-                open={snackbarOpen}
-                autoHideDuration={6000}
-                onClose={handleCloseSnackbar}
-                message={snackbarMessage}
-            />
-        </Box>
-    );
-
-
+      <Box sx={{ display: "flex", gap: 2 }}>
+        <Button variant="contained" onClick={handleSubmit}>
+          {product?.id ? "Uppdatera" : "Skapa"}
+        </Button>
+        {product && (
+          <Button variant="outlined" color="secondary" onClick={onClear}>
+            Avbryt
+          </Button>
+        )}
+      </Box>
+    </Box>
+  );
 }
+
 export default AdminForm;
 
 
