@@ -23,7 +23,9 @@ import { Avatar, TextField, Button, Dialog, DialogTitle, DialogContent, DialogAc
 import axios from "../services/api";
 import Cart from './Cart';
 import { getPopulatedCartForUser } from "../services/CartService";
-function Navbar({ userId, setUserId }){
+
+
+function Navbar({ userId, setUserId, setCartCount, cartCount }){
     const [cartOpen, setCartOpen] = useState(false);
     function toggleCart(open) { 
         return () => {
@@ -31,31 +33,45 @@ function Navbar({ userId, setUserId }){
         };
     }
     const [menuDropDown, setMenuDropDown] = useState(null);
+    
     function openMenuDropDown(event) {
         setMenuDropDown(event.currentTarget);
     }
+   
     function closeMenuDropDown() {
         setMenuDropDown(null);
     }
 
-    const [cartCount, setCartCount] = useState(0);
+    //const [cartCount, setCartCount] = useState(0);
     const [loginOpen, setLoginOpen] = useState(false);
     const [userName, setUserName] = useState("");
-    async function handleLogin() {
-        try {
-            const response = await axios.get(`/users/${userId}`);
-            const user = response.data;
-            localStorage.setItem("userId", userId);
-            setUserId(user.id);
-            setUserName(user.firstName);
-            setLoginOpen(false);
-            alert("Inloggad som användare " + user.firstName);
-        } catch (error) {
-            alert("Användare med id: " + userId + " hittades inte.");
-            setUserName("");
-            localStorage.removeItem("userId");
+    
+    useEffect(() => {
+        const storedName = localStorage.getItem("userName");
+        if (storedName) {
+          setUserName(storedName);
         }
-    }
+      }, []);
+
+      async function handleLogin() {
+        try {
+          const response = await axios.get(`/users/${userId}`);
+          const user = response.data;
+          localStorage.setItem("userId", userId);
+          localStorage.setItem("userName", user.firstName); //  Spara namnet
+          setUserId(user.id);
+          setUserName(user.firstName);
+          setLoginOpen(false);
+          alert("Inloggad som användare " + user.firstName);
+        } catch (error) {
+          alert("Användare med id: " + userId + " hittades inte.");
+          setUserName("");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("userName"); //  Ta bort namnet om det var fel
+        }
+      }
+      
+    
     const navigate = useNavigate();
     function goToAdmin() {
         navigate("/admin");
@@ -71,10 +87,19 @@ function Navbar({ userId, setUserId }){
             getPopulatedCartForUser(userId).then((cartData) => {
                 console.log("Cart data:", cartData);
                 const count = cartData.reduce((acc, item) => acc + item.amount, 0);
-                setCartCount(count); // Uppdatera cartCount när varukorgen hämtas
+                //setCartCount(count); // Uppdatera cartCount när varukorgen hämtas
             });
         }
     }, [userId]);
+
+    async function handleAddToCart(productId, amount) {
+        try {
+          const { count } = await addProductToCart(userId, productId, amount);  // Uppdatera antalet samtidigt som produkten läggs till
+          setCartCount(count); // Uppdatera antalet i navbar direkt
+        } catch (error) {
+          console.error('Fel vid att lägga till i varukorgen:', error);
+        }
+      }
 
 
     return (
