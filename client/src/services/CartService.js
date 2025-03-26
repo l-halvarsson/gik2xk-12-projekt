@@ -8,6 +8,7 @@ export async function addProductToCart(userId, productId, amount) {
         throw new Error("Saknar nödvändig data");
     }
 
+
     const body = { userId, productId, amount };
     console.log('Skickar till backend:', { userId, productId, amount });
     const response = await axios.post('/cart/addProduct', body);
@@ -17,7 +18,14 @@ export async function addProductToCart(userId, productId, amount) {
 
 //hämtar en användares senaste varukorge OCH dess innehåll 
 export async function getPopulatedCartForUser(userId) {
-    const response = await axios.get(`/users/${userId}/getCart`);
+    const response = await axios.get(`/users/${userId}/getCart`); 
     return response.data; 
-}
+} 
 
+// services/CartService.js
+
+export const completePurchaseForUser = async (userId) => {
+    const response = await axios.post(`/cart/checkout`, { userId });
+    return response.data;
+  };
+  

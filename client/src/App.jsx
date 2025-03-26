@@ -12,7 +12,12 @@ function App() {
   return (
     <>
       <Navbar userId={userId} setUserId={setUserId}/> 
-      <Container sx={{ mt: 4, border: "#F6F5F0", bgcolor: "#F6F5F0" }} maxWidth="xl" component="main">
+      <Container
+  sx={{ mt: 0, bgcolor: "#F6F5F0", padding: 0 }}
+  maxWidth={false}           // ← gör att den fyller hela skärmen
+  disableGutters             // ← tar bort padding inuti Container
+  component="main"
+>
         <Outlet context={{ userId }}/>  
       </Container> 
     </>

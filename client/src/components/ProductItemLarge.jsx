@@ -36,7 +36,7 @@ function ProductItemLarge({ product, userId, /*updateCart*/ }){
       height: "auto",
       objectFit: "cover",
     }}
-    image={product.imageUrl || placeholderImage}
+    image={product.imageUrl || placeholderImage}  
     alt={`Bild på ${product.title}`}
   />
 

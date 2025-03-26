@@ -81,9 +81,9 @@ async function getLatestCartForUser(userId) {
     const cartItems = latestCart.Products.map(product => ({
       title: product.title,
       price: product.price,
+      imageUrl: product.imageUrl,
       amount: product.CartRow.amount
     }));
-
     return createResponseSuccess(cartItems);
   } catch (error) {
     return createResponseError(500, 'Det gick inte att hämta upp varukorgen');
@@ -120,20 +120,26 @@ async function removeProductFromCart(userId, productId) {
   }
 }
 //?
+// Simulera ett köp
 async function completePurchase(userId) {
   try {
     const cart = await db.Cart.findOne({ where: { user_id: userId, payed: false } });
+    
     if (!cart) {
       return createResponseError(404, "Ingen aktiv varukorg hittades.");
     }
 
-    // Töm varukorgen direkt här
-    await db.cartRow.destroy({ where: { cart_id: cart.id } });
+    // Simulera köp - här kan du lägga till mer logik, exempelvis för att registrera transaktionen.
+    // Töm varukorgen efter köp
+    await db.CartRow.destroy({ where: { cart_id: cart.id } });
 
-    return createResponseSuccess({ message: "Köpet har genomförts." });
+    // Markera varukorgen som betald
+    await cart.update({ payed: true });
+
+    return createResponseSuccess({ message: "Köpet har genomförts och varukorgen är tömd." });
 
   } catch (error) {
-    console.error('Error during purchase completion:', error);  // Loggar hela felet
+    console.error('Error during purchase completion:', error);
     return createResponseError(500, "Ett fel uppstod vid genomförandet av köpet", error.message);
   }
 }

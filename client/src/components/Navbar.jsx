@@ -1,7 +1,5 @@
-import * as React from "react";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Link, Outlet } from "react-router-dom";
+import React, { useEffect, useState } from "react";  // Importerar React och hooks korrekt
+import { Link, Outlet, useNavigate } from "react-router-dom"; // Importerar Link, Outlet och useNavigate i samma rad
 import { 
     AppBar, 
     Toolbar, 
@@ -14,7 +12,8 @@ import {
     List, 
     ListItem, 
     Tooltip,
-    ListItemText 
+    ListItemText,
+    Badge
 } from "@mui/material";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -23,7 +22,7 @@ import HiveOutlinedIcon from "@mui/icons-material/HiveOutlined";
 import { Avatar, TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions} from "@mui/material";
 import axios from "../services/api";
 import Cart from './Cart';
-
+import { getPopulatedCartForUser } from "../services/CartService";
 function Navbar({ userId, setUserId }){
     const [cartOpen, setCartOpen] = useState(false);
     function toggleCart(open) { 
@@ -39,10 +38,8 @@ function Navbar({ userId, setUserId }){
         setMenuDropDown(null);
     }
 
-
+    const [cartCount, setCartCount] = useState(0);
     const [loginOpen, setLoginOpen] = useState(false);
-    //const [userId, setUserId] = useState(localStorage.getItem("userId") || "");
-
     const [userName, setUserName] = useState("");
     async function handleLogin() {
         try {
@@ -69,10 +66,27 @@ function Navbar({ userId, setUserId }){
     const updateCart = () => {
         setCartOpen(true); // Öppna varukorg när den uppdateras
     };
+    useEffect(() => {
+        if (userId) {
+            getPopulatedCartForUser(userId).then((cartData) => {
+                console.log("Cart data:", cartData);
+                const count = cartData.reduce((acc, item) => acc + item.amount, 0);
+                setCartCount(count); // Uppdatera cartCount när varukorgen hämtas
+            });
+        }
+    }, [userId]);
 
 
     return (
-        <AppBar position="sticky" sx={{height: "7rem", backgroundColor: "#F6F5F0", boxShadow: 'none'}}>
+        <AppBar 
+  position="sticky" 
+  sx={{ 
+    height: "7rem", 
+    background: "linear-gradient(to bottom, #E0DED7, #F6F5F0)", 
+    boxShadow: "none" 
+  }}
+>
+
             <Toolbar sx={{height: "100%", display: "flex", justifyContent: "space-between" }}>
 
                 {/* Vänster del - meny */}
@@ -118,7 +132,9 @@ function Navbar({ userId, setUserId }){
                 {/* Varukorg */}
                 <span>|</span>
                 <IconButton onClick={toggleCart(true)}>
-                    <ShoppingCartIcon />
+                    <Badge badgeContent={cartCount} color="primary">
+                        <ShoppingCartIcon />
+                     </Badge>
                 </IconButton>
                 </Box>
 

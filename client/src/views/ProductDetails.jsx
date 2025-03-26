@@ -45,7 +45,7 @@ function ProductDetails() {
   }
 
   return (
-    <Container sx={{ mt: 4 }}>
+    <Container sx={{ mt: 0 }}>
       {/* Tillbakaknappen */}
       <Button
         variant="contained"

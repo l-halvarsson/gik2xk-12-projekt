@@ -7,10 +7,10 @@ function Home() {
   return (
     <Grid container sx={{ height: "100vh" }}>
       {/* Vänster sektion med text och knapp */}
-      <Grid
+      <Grid 
         item
         xs={12}
-        md={6}
+        md={5}
         sx={{
           bgcolor: "#F6F5F0",
           height: "100%",
@@ -18,7 +18,8 @@ function Home() {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "flex-start",
-          px: 8,
+          paddingLeft: "4rem",
+
         }}
       >
         <Typography variant="h2" sx={{ fontWeight: 500 }}>
@@ -41,7 +42,7 @@ function Home() {
       </Grid>
 
       {/* Höger sektion med bild */}
-      <Grid item xs={12} md={6} sx={{ height: "100%" }}>
+      <Grid item xs={12} md={7} sx={{ height: "100%" }}>
         <Box
           component="img"
           src={bannerImage}
@@ -50,6 +51,7 @@ function Home() {
             width: "100%",
             height: "100%",
             objectFit: "cover",
+        
           }}
         />
       </Grid>
