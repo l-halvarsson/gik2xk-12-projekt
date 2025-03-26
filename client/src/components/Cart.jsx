@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getPopulatedCartForUser } from "../services/CartService";
 import { Button, Typography, Box } from "@mui/material";
-//import { useOutletContext } from "react-router-dom";
+
 
 function Cart({ userId }) { 
   //const { userId } = useOutletContext(); 
@@ -46,6 +46,7 @@ function Cart({ userId }) {
         </Box>
     );
 }
+
 
 export default Cart;
 
