@@ -34,7 +34,7 @@ router.delete('/removeProduct', async (req, res) => {
         res.status(result.status).json(result.data);
     } catch (error) {
         res.status(500).json(error.data);
-    }
+    }                      1
 }); 
 
 //Simulera ett köp        

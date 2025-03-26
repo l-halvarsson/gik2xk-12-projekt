@@ -58,7 +58,6 @@ const handleAddedAmount = async (userId, productId) => {
   }
 };
 //hanter minskning
-//hantera ökning
 const handleReducedAmount = async (userId, productId) => {
   try {
     await decreaseProductAmount(userId, productId);
