@@ -82,7 +82,8 @@ async function getLatestCartForUser(userId) {
       title: product.title,
       price: product.price,
       imageUrl: product.imageUrl,
-      amount: product.CartRow.amount
+      amount: product.CartRow.amount,
+      product_id: product.id
     }));
     return createResponseSuccess(cartItems);
   } catch (error) {
@@ -93,19 +94,24 @@ async function getLatestCartForUser(userId) {
 
 
 async function removeProductFromCart(userId, productId) {
-  const cartItem = await db.cartItem.findOne({ where: { userId, productId } });
+  const cart = await db.Cart.findOne({ where: { user_id: userId, payed: false } });
+  if (!cart) return createResponseError(404, "Ingen aktiv varukorg");
+
+  const cartItem = await db.CartRow.findOne({
+    where: { cart_id: cart.id, product_id: productId }
+  });
 
   if (!cartItem) {
-      throw new Error("Produkten finns inte i varukorgen");
+    return createResponseError(404, "Produkten finns inte i varukorgen");
   }
 
   if (cartItem.amount > 1) {
-      await cartItem.update({ amount: cartItem.amount - 1 });
+    await cartItem.update({ amount: cartItem.amount - 1 });
   } else {
-      await cartItem.destroy(); // Om antal är 1, ta bort produkten helt
+    await cartItem.destroy();
   }
 
-  return { status: 200, data: { message: "Produkten uppdaterad i varukorgen" } };
+  return createResponseSuccess({ message: "Produkten uppdaterad i varukorgen" });
 }
 
 //?
@@ -134,7 +140,7 @@ async function completePurchase(userId) {
 }
 
 // Uppdatera TILLAGT
-async function updateAmount(userId, productId , requeredAmount) {
+async function updateAmount(userId, productId , resultAmount) {
   try {
     const cart = await db.Cart.findOne({ where: { user_id: userId, payed: false } });
     if (!cart) return createResponseError(404, "Varukorg saknas");
@@ -146,7 +152,7 @@ async function updateAmount(userId, productId , requeredAmount) {
     if (!row) return createResponseError(404, "Produkt saknas i varukorgen");
 
     //osäker om db. ???
-    const newAmount = CartRow.amount + requeredAmount; 
+    const newAmount = row.amount + resultAmount; 
 
     if (newAmount < 1) {
       await row.destroy(); // ta bort raden helt om mängden är < 1

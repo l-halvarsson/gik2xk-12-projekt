@@ -49,6 +49,7 @@ const fetchCart = async () => {
 
 //hantera ökning
 const handleAddedAmount = async (userId, productId) => {
+  console.log("➕ Klick: ", userId, productId);
   try {
     await increaseProductAmount(userId, productId);
     //osäker -????
@@ -94,7 +95,9 @@ useEffect(() => {
         <Typography>Varukorgen är tom.</Typography>
       ) : (
         <>
-          {items.map((item, index) => (
+          {items.map((item, index) => {
+            console.log("item:", item);
+            return(
             <Card
               key={index}
               sx={{
@@ -118,17 +121,18 @@ useEffect(() => {
                   {item.price} SEK
                 </Typography>
                 <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
-                <IconButton size="small" onClick={handleReducedAmount}> 
+                <IconButton size="small" onClick={() => handleReducedAmount(userId, item.product_id)}>
                   <RemoveIcon />
                 </IconButton>
                 <Typography sx={{ mx: 1 }}>{item.amount}</Typography>
-                <IconButton size="small" onClick={handleAddedAmount}>
+                <IconButton size="small" onClick={() => handleAddedAmount(userId, item.product_id)}>
                   <AddIcon />
                 </IconButton>
                 </Box>
               </CardContent>
             </Card>
-          ))}
+            );
+          })}
 
           <Divider sx={{ my: 2 }} />
 

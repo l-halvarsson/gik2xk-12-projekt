@@ -52,8 +52,8 @@ router.post('/checkout', (req, res) => {
 
 //Uppdatera produkt antal TILLAGT // Then()??
 router.put('/updateProduct', async (req, res) => {
-    const { userId, productId, requeredAmount } = req.body;
-    const result = await cartService.updateAmount(userId, productId, requeredAmount );
+    const { userId, productId, resultAmount } = req.body;
+    const result = await cartService.updateAmount(userId, productId, resultAmount );
     res.status(result.status).json(result.data);
   });
 

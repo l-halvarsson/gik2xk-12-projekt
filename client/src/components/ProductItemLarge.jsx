@@ -4,6 +4,8 @@
 import { Card, CardContent, CardMedia, Typography, Box, Button } from "@mui/material";
 import placeholderImage from "../assets/placeholder.png";
 import { addProductToCart } from '../services/CartService';
+import { getPopulatedCartForUser } from '../services/CartService';
+
 
 
 
@@ -12,7 +14,9 @@ function ProductItemLarge({ product, userId, setCartCount}){
   const handleAdd = async () => {
     try {
       await addProductToCart(userId, product.id, 1);
-      window.location.reload(); // Laddar om sidan
+      const updatedCart = await getPopulatedCartForUser(userId);
+      setCartCount(updatedCart.reduce((sum, item) => sum + item.amount, 0));
+    
     } catch (err) {
       console.error('Fel vid lägg till i varukorg:', err);
       alert('Kunde inte lägga till i varukorg.');
