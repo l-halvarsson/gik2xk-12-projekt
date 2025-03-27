@@ -2,17 +2,14 @@ import { useNavigate } from "react-router-dom";
 import { Button, Container, Typography } from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ProductList from "../components/ProductList"; // Importera ProductList
+import BreadcrumbsNav from "../components/BreadcrumbsNav";
 
 function AllProducts() {
     const navigate = useNavigate();
 
     return (
         <Container maxWidth="md">
-
-
-            <Typography variant="h3" gutterBottom>
-                Alla produkter
-            </Typography>
+            <BreadcrumbsNav />
 
             {/* Använd ProductList för att visa produkter */}
             <ProductList />

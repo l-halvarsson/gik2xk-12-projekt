@@ -8,6 +8,7 @@ import RatingForm from "../components/RatingForm"; // Importera din Rating-kompo
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'; // Importera ikonen
 import Rating from "../components/Rating"; // Importera Rating-komponenten
 import { useOutletContext } from "react-router-dom"; //Tillagt precis
+import BreadcrumbsNav from "../components/BreadcrumbsNav";
 
 //const userId = Number(localStorage.getItem("userId"));
 
@@ -51,6 +52,7 @@ function ProductDetails() {
 
   return (
     <Container sx={{ mt: 0 }}>
+      <BreadcrumbsNav lastProductTitle={product?.title}/>
       {/* Tillbakaknappen */}
       <Button
         variant="contained"

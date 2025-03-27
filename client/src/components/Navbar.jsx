@@ -174,7 +174,7 @@ function Navbar({ userId, setUserId, setCartCount, cartCount }){
 
 
                 {/* Varukorg */}
-                <span>|</span>
+                <span style={{ color: "grey" }}>|</span>
                 <IconButton onClick={toggleCart(true)}>
                     <Badge badgeContent={cartCount} color="primary">
                         <ShoppingCartIcon />
