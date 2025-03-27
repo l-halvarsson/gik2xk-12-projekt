@@ -13,7 +13,7 @@ const {
         presence: { allowEmpty: false, message: "^Titeln får inte vara tom." },
         length: {
             minimum: 2,
-            maximum: 100,
+            maximum: 50,
             tooShort: "^Titeln måste vara minst %{count} tecken lång.",
             tooLong: "^Titeln får inte vara längre än %{count} tecken lång."
         }
@@ -21,8 +21,8 @@ const {
     description: {
         presence: { allowEmpty: false, message: "^Beskrivningen får inte vara tom." },
         length: {
-            minimum: 10,
-            maximum: 1000,
+            minimum: 5,
+            maximum: 100,
             tooShort: "^Beskrivningen måste vara minst %{count} tecken lång.",
             tooLong: "^Beskrivningen får inte vara längre än %{count} tecken lång."
         }
