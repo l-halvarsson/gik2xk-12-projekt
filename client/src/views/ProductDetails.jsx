@@ -20,6 +20,14 @@ function ProductDetails() {
   const navigate = useNavigate(); // För att kunna navigera till föregående sida
   const { userId, setCartCount } = useOutletContext(); // Hämtar userID från app.jsx
 
+  //Precis tillagt
+  const fetchAverageRating = () => {
+    axios.get(`/products/${id}/average-rating`) // 
+      .then(response => {
+        setAverageRating(response.data.averageRating);
+      })
+      .catch(error => console.error("Fel vid hämtning av medelbetyg:", error));
+  };
 
   useEffect(() => {
     // Hämta produktdetaljer
@@ -27,15 +35,11 @@ function ProductDetails() {
       setProduct(data);
       setLoading(false);
     });
-
-    // Hämta medelbetyget för produkten
-    axios.get(`/api/products/${id}/average-rating`)
-      .then(response => {
-        setAverageRating(response.data.averageRating); // Sätt medelbetyget
-      })
-      .catch(error => console.error("Fel vid hämtning av medelbetyg:", error));
+  
+    // Hämta medelbetyg
+    fetchAverageRating(); 
   }, [id]);
-
+  
   if (loading) {
     return (
       <Container sx={{ textAlign: "center", mt: 5 }}>
@@ -70,10 +74,10 @@ function ProductDetails() {
       />
 
       {/* Visa medelbetyget genom Rating-komponenten */}
-      <Rating productId={id} />
+      <Rating averageRating={averageRating} />
 
       { /* Visar där en sätter betyg på produkt*/}
-      <RatingForm productId={id} />
+      <RatingForm productId={id} onRatingSubmitted={fetchAverageRating} />
     </Container>
   );
 }

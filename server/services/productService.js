@@ -157,6 +157,8 @@ async function createProductRating(productId, ratingValue) {
 // Berälnar snittbetyg för en produkt
 async function calculateAverageRating(productId) {
     try {
+        console.log("Hämtar betyg för produkt:", productId);
+
         // Hämta alla betyg för produkten
         const ratings = await db.Rating.findAll({
             where: { product_id: productId },

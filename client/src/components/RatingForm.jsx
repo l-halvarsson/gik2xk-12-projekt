@@ -20,6 +20,7 @@ function RatingForm({ productId, onRatingSubmitted }) {
           
           addRating(productId, value)
           .then(() => {
+            console.log("Betyg skickat! Kör onRatingSubmitted...");
             onRatingSubmitted?.();
             setSubmitted(true);
             setTimeout(() => {

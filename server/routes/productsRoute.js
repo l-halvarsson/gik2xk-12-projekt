@@ -54,9 +54,9 @@ router.put('/:id', async (req, res) => {
 // Hämta medelbetyget för en specifik produkt
 router.get('/:id/average-rating', async (req, res) => {
     const { id } = req.params;
-    const { rating } = req.body;
+    //const { rating } = req.body;
 
-    const result = await productService.calculateAverageRating(id, rating);
+    const result = await productService.calculateAverageRating(id);
     res.status(result.status).json(result.data);
 });
     
