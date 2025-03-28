@@ -17,7 +17,7 @@ function RatingForm({ productId, onRatingSubmitted }) {
         if (value === 0) {
             alert("Välj ett betyg först!");
             return;
-          }
+        }
           
           addRating(productId, value)
           .then(() => {

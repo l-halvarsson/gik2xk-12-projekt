@@ -173,6 +173,20 @@ async function calculateAverageRating(productId) {
         return createResponseError(500, "Ett fel uppstod vid beräkning av snittbetyget", error.message);
     }
 } 
+
+// Hämta alla betyg
+async function getAllRatings(productId) {
+    try {
+      const ratings = await db.Rating.findAll({
+        where: { product_id: productId },
+        attributes: ['rating', 'createdAt'], // Hämta betygen och datumet för betygsättningen
+      });
+  
+      return createResponseSuccess(ratings);
+    } catch (error) {
+      return createResponseError(500, 'Fel vid hämtning av betyg.', error.message);
+    }
+  }
 module.exports = {
     getAllProducts,
     getProductById,
@@ -180,5 +194,6 @@ module.exports = {
     deleteProduct,
     updateProduct,
     createProductRating,
-    calculateAverageRating
+    calculateAverageRating,
+    getAllRatings
 };

@@ -7,23 +7,22 @@ import axios from 'axios';
 import RatingForm from "../components/RatingForm"; 
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'; 
 import Rating from "../components/Rating"; 
+import AllRatings from "../components/AllRatings"; // Importera AllRatings-komponenten
 import { useOutletContext } from "react-router-dom"; 
 import BreadcrumbsNav from "../components/BreadcrumbsNav";
 
-
-
-//Funktion för produktdetaljer
 function ProductDetails() {
-  const { id } = useParams(); // få produkt-ID från URL
+  const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [averageRating, setAverageRating] = useState(null); // För att lagra medelbetyget
-  const navigate = useNavigate(); // För att kunna navigera till föregående sida
-  const { userId, setCartCount } = useOutletContext(); // Hämtar userID från app.jsx
+  const [averageRating, setAverageRating] = useState(null);
+  const navigate = useNavigate();
+  const { userId, setCartCount } = useOutletContext();
 
-  //Inkludera medelbetyg
+
+
   const fetchAverageRating = () => {
-    axios.get(`/products/${id}/average-rating`) // 
+    axios.get(`/products/${id}/average-rating`)
       .then(response => {
         setAverageRating(response.data.averageRating);
       })
@@ -31,16 +30,13 @@ function ProductDetails() {
   };
 
   useEffect(() => {
-    // Hämta produktdetaljer
     getOne(id).then((data) => {
       setProduct(data);
       setLoading(false);
     });
-  
-    // Hämta medelbetyg
-    fetchAverageRating(); 
+    fetchAverageRating();
   }, [id]);
-  
+
   if (loading) {
     return (
       <Container sx={{ textAlign: "center", mt: 5 }}>
@@ -52,13 +48,11 @@ function ProductDetails() {
 
   return (
     <Container sx={{ mt: 0 }}>
-      {/* Använd BredcrumbsNav komponeten */}
-      <BreadcrumbsNav lastProductTitle={product?.title}/>
-      {/* Tillbakaknappen */}
+      <BreadcrumbsNav lastProductTitle={product?.title} />
       <Button
         variant="contained"
         startIcon={<ChevronLeftIcon />}
-        onClick={() => navigate(-1)} // Navigerar till föregående sida
+        onClick={() => navigate(-1)}
         sx={{
           mb: 2,
           backgroundColor: "#F5F5DC",
@@ -68,18 +62,16 @@ function ProductDetails() {
       >
         Tillbaka
       </Button>
-      {/* Visa produkt + all info */}
+
       <ProductItemLarge 
         product={product}
         userId={userId}  
         setCartCount={setCartCount}
       />
 
-      {/* Visa medelbetyget genom Rating-komponenten */}
       <Rating averageRating={averageRating} />
-
-      { /* Visar där en sätter betyg på produkt*/}
       <RatingForm productId={id} onRatingSubmitted={fetchAverageRating} />
+      <AllRatings productId={id} /> {/* Visa alla betyg */}
     </Container>
   );
 }

@@ -64,6 +64,13 @@ router.post('/:id/ratings', async (req, res) => {
     res.status(result.status).json(result.data);
   });
 
+  // Hämta alla betyg
+router.get('/:id/ratings', async (req, res) => {
+    const { id } = req.params;
+    const result = await productService.getAllRatings(id);
+    res.status(result.status).json(result.data);
+  });
+
 
 
 
