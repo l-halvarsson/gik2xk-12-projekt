@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button, Container, Typography } from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ProductList from "../components/ProductList"; // Importera ProductList
+import ProductList from "../components/ProductList";
 import BreadcrumbsNav from "../components/BreadcrumbsNav";
 
 function AllProducts() {

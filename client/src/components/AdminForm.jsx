@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { TextField, Button, Box, Typography, Alert } from '@mui/material';
 
+// Formulär för att skapa eller uppdatera en produkt med validering av titel, beskrivning, pris och valfri bild-URL.
 function AdminForm({ product, onCreate, onUpdate, onClear }) {
   const [formData, setFormData] = useState({
     title: '',
@@ -34,7 +35,7 @@ function AdminForm({ product, onCreate, onUpdate, onClear }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  }; 
 
   const validate = () => {
     let newErrors = {};

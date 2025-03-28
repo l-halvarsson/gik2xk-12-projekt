@@ -1,15 +1,14 @@
-
 import * as React from "react";
 import { Link, Outlet } from "react-router-dom";
 import { Container } from "@mui/material";
 import Navbar from "./components/Navbar.jsx";
-import { useState } from "react"; //Tillagt precis
+import { useState } from "react"; 
 
 
-
+// Huvudkomponent som hanterar användar-ID och antal produkter i varukorgen. Renderar navbar och sidinnehåll via Outlet.
 function App() {
-  const [userId, setUserId] = useState(localStorage.getItem("userId") || ""); //Tillagt precis
-  const [cartCount, setCartCount] = useState(0); // Lägg till definiering av cartCount
+  const [userId, setUserId] = useState(localStorage.getItem("userId") || ""); 
+  const [cartCount, setCartCount] = useState(0); 
   return (
     <>
       <Navbar userId={userId} setUserId={setUserId} setCartCount={setCartCount} cartCount={cartCount}/> 
@@ -17,8 +16,8 @@ function App() {
 
       <Container
   sx={{ mt: 0, bgcolor: "#F6F5F0", padding: 0 }}
-  maxWidth={false}           // ← gör att den fyller hela skärmen
-  disableGutters             // ← tar bort padding inuti Container
+  maxWidth={false}           
+  disableGutters             
   component="main"
 >
         <Outlet context={{ userId, setCartCount }}/>  

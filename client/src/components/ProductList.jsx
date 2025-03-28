@@ -3,6 +3,7 @@ import { Grid } from "@mui/material";
 import ProductItemSmall from './ProductItemSmall';
 import { getAllProducts } from '../services/ProductService';
 
+// Hämtar och visar en lista med produkter i en grid.
 function ProductList() {
     const [products, setProducts] = useState([]);
 

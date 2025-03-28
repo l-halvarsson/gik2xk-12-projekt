@@ -4,15 +4,15 @@ import { getOne } from "../services/ProductService";
 import ProductItemLarge from "../components/ProductItemLarge";
 import { CircularProgress, Container, Typography, Button } from "@mui/material";
 import axios from 'axios';
-import RatingForm from "../components/RatingForm"; // Importera din Rating-komponent
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'; // Importera ikonen
-import Rating from "../components/Rating"; // Importera Rating-komponenten
-import { useOutletContext } from "react-router-dom"; //Tillagt precis
+import RatingForm from "../components/RatingForm"; 
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft'; 
+import Rating from "../components/Rating"; 
+import { useOutletContext } from "react-router-dom"; 
 import BreadcrumbsNav from "../components/BreadcrumbsNav";
 
-//const userId = Number(localStorage.getItem("userId"));
 
 
+//Funktion för produktdetaljer
 function ProductDetails() {
   const { id } = useParams(); // få produkt-ID från URL
   const [product, setProduct] = useState(null);
@@ -21,7 +21,7 @@ function ProductDetails() {
   const navigate = useNavigate(); // För att kunna navigera till föregående sida
   const { userId, setCartCount } = useOutletContext(); // Hämtar userID från app.jsx
 
-  //Precis tillagt
+  //Inkludera medelbetyg
   const fetchAverageRating = () => {
     axios.get(`/products/${id}/average-rating`) // 
       .then(response => {
@@ -52,6 +52,7 @@ function ProductDetails() {
 
   return (
     <Container sx={{ mt: 0 }}>
+      {/* Använd BredcrumbsNav komponeten */}
       <BreadcrumbsNav lastProductTitle={product?.title}/>
       {/* Tillbakaknappen */}
       <Button
@@ -70,8 +71,7 @@ function ProductDetails() {
       {/* Visa produkt + all info */}
       <ProductItemLarge 
         product={product}
-        userId={userId} // Ändrade till detta och det 
-        //updateCart={updateCart}
+        userId={userId}  
         setCartCount={setCartCount}
       />
 

@@ -2,7 +2,6 @@ const router = require('express').Router();
 const { where } = require('sequelize');
 const db = require('../models');
 const productService = require('../services/productService');
-//const multer = require('multer'); //Tillagt idag
 const path = require("path");
 
 
@@ -14,7 +13,7 @@ productService.getAllProducts().then((result) => {
     });
 });
 
-// Hämta en specifik produkt inklusive alla betyg - Testa när betygen är inlags
+// Hämta en specifik produkt inklusive alla betyg 
 router.get('/:id/', (req, res) => {
     const id = req.params.id;
 
@@ -23,11 +22,8 @@ router.get('/:id/', (req, res) => {
         }); 
 });
 
-
 //Skapa en produkt 
- //Skapa en produkt - OBS bilden kvar
  router.post('/', (req, res) => {
-    //Hämta data från "body" - hämta bild
     const newProductData = req.body;
     productService.createProduct(newProductData).then((result) => {
         res.status(result.status).json(result.data);
@@ -54,7 +50,6 @@ router.put('/:id', async (req, res) => {
 // Hämta medelbetyget för en specifik produkt
 router.get('/:id/average-rating', async (req, res) => {
     const { id } = req.params;
-    //const { rating } = req.body;
 
     const result = await productService.calculateAverageRating(id);
     res.status(result.status).json(result.data);
@@ -68,26 +63,9 @@ router.post('/:id/ratings', async (req, res) => {
     const result = await productService.createProductRating(id, rating);
     res.status(result.status).json(result.data);
   });
- /* TIDIGARE VERSION, testar den nya ovan
-
-router.post('/:id/ratings', async (req, res) => {
-    const { id } = req.params;
-
-    const result = await productService.createProductRating(id);
-    res.status(result.status).json(result.data);    
-});     */
-
-
-
-
-
-
-
-
 
 
 
 
 
 module.exports = router;
-//module.exports = uploads;

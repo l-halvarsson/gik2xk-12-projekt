@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const db = require('../models');
-const cartService = require('../services/cartService'); //Tillagd idag
+const cartService = require('../services/cartService'); 
 
 //Lägger till en produkt i användarens senaste varukorg
 router.post('/addProduct', async (req, res) => {
@@ -12,7 +12,7 @@ router.post('/addProduct', async (req, res) => {
     });
 });
 
-
+//Hämta alla produkter i varukorgen
 router.get('/', (req, res) => {
     db.product.findAll().then((result) => {
     res.send(result);
@@ -22,8 +22,6 @@ router.get('/', (req, res) => {
 router.put('/', (req, res) => {
     res.send('Put products');
 });
-
-
 
 // Ta bort en produkt från varukorgen
 router.delete('/removeProduct', async (req, res) => {
@@ -50,7 +48,7 @@ router.post('/checkout', (req, res) => {
     });
 });
 
-//Uppdatera produkt antal TILLAGT // Then()??
+//Uppdatera produkt antal
 router.put('/updateProduct', async (req, res) => {
     const { userId, productId, resultAmount } = req.body;
     const result = await cartService.updateAmount(userId, productId, resultAmount );

@@ -3,13 +3,14 @@ import { Rating as MuiRating, Box, Typography, Button } from "@mui/material";
 import axios from 'axios';
 import { addRating } from "../services/ProductService";
 
+// Formulärkomponent för att betygsätta en produkt med stjärnor. Hanterar val, sändning och bekräftelsemeddelande.
 function RatingForm({ productId, onRatingSubmitted }) {
     const [value, setValue] = useState(0); // Startvärde för betyg (0 = ingen stjärna vald)
-    const [submitted, setSubmitted] = useState(false); //TILLAGT
+    const [submitted, setSubmitted] = useState(false);
 
     const handleChange = (event, newValue) => {
         setValue(newValue); // Uppdatera betyget när användaren klickar på en stjärna
-        setSubmitted(false); //TILLAGT
+        setSubmitted(false);
     };
 
     const handleSubmit = () => {
@@ -40,6 +41,7 @@ function RatingForm({ productId, onRatingSubmitted }) {
                 onChange={handleChange} // Funktion som körs när användaren ändrar betyget
                 max={5} // Max antal stjärnor
             />
+            {/* Skicka betyg knappen */}
             <Button
                 variant="contained"
                 onClick={handleSubmit}
@@ -53,7 +55,7 @@ function RatingForm({ productId, onRatingSubmitted }) {
             >
                 Skicka betyg
             </Button>
-            {/*VISA MEDDELANDE OM Betyget är skickat TILLAGT*/}
+            {/*Visa meddelande när betyget är skickat*/}
             {submitted && ( 
         <Typography variant="body1" color="success.main" sx={{ mt: 2 }}>
           Betyget har registrerats!

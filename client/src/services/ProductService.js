@@ -1,4 +1,3 @@
-/*Denna kod är inte prövad*/
 import axios from './api';
 
 //functionen hämtar produkter från backend
@@ -16,6 +15,7 @@ export async function getAllProducts() {
     }
     
 }
+//Hämtar en produkt från backend
   export async function getOne(id) {
       try {
         const response = await axios.get(`/products/${id}`);
@@ -28,7 +28,7 @@ export async function getAllProducts() {
         e?.response ? console.log(e.response.data) : console.log(e);
       }
   }
-      
+     //Skapar en produkt från backend 
   export async function create(product) {
     try {
       const response = await axios.post('/products', product);
@@ -42,6 +42,7 @@ export async function getAllProducts() {
     }
   }
 
+  //Uppdaterar en produkt från backend
 export async function update(product) {
   try {
     const response = await axios.put(`/products/${product.id}`, product);
@@ -55,6 +56,7 @@ export async function update(product) {
   }
 }
 
+//Raderar en produkt från backend
       export async function remove(id) {
         try {
           const response = await axios.delete(`/products/${id}`);
@@ -68,7 +70,7 @@ export async function update(product) {
         }
     }
 
-    //addRating
+    //Sätter betyg från backend
     export async function addRating(productId, ratingValue) {
       try {
         const response = await axios.post(`/products/${productId}/ratings`, {

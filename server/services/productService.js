@@ -6,7 +6,7 @@ const {
     createResponseMessage
   } = require('../helpers/responseHelper');
 
-  /*----- Klart ----- */
+  
 
   const constraints = {
     title: {
@@ -33,14 +33,7 @@ const {
             greaterThan: 0,
             message: "^Priset måste vara en positiv siffra."
         }
-    }/*,
-    imageUrl: {
-        presence: { allowEmpty: false, message: "^En bild-URL måste anges." },
-        format: {
-            pattern: /\.(jpeg|jpg|png|gif)$/i,
-            message: "^Endast bilder i formaten JPEG, JPG, PNG och GIF är tillåtna."
-        }
-    }*/
+    }
 };
 
 // Hämtar alla produkter
@@ -91,7 +84,7 @@ async function createProduct(newProduct) {
         } 
 }
 
-// Redo att testas
+// Ta bort produkt
 async function deleteProduct(id) {
     try {
         // Ta bort den valda produkten från databasen

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";  // Importerar React och hooks korrekt
-import { Link, Outlet, useNavigate } from "react-router-dom"; // Importerar Link, Outlet och useNavigate i samma rad
+import React, { useEffect, useState } from "react";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { 
     AppBar, 
     Toolbar, 
@@ -25,7 +25,7 @@ import axios from "../services/api";
 import Cart from './Cart';
 import { getPopulatedCartForUser } from "../services/CartService";
 
-
+// Navbar med produktmeny, logotyp, användarinloggning, avatar, varukorg och sidopanel för varukorgens innehåll.
 function Navbar({ userId, setUserId, setCartCount, cartCount }){
     const [cartOpen, setCartOpen] = useState(false);
     function toggleCart(open) { 
@@ -43,10 +43,12 @@ function Navbar({ userId, setUserId, setCartCount, cartCount }){
         setMenuDropDown(null);
     }
 
-    //const [cartCount, setCartCount] = useState(0);
+    // loginOpen styr om inloggningsdialogen visas
     const [loginOpen, setLoginOpen] = useState(false);
+    // userName lagrar det inloggade användarnamnet
     const [userName, setUserName] = useState("");
     
+    // Hämtar användarnamn från localStorage vid sidladdning och sätter det i state
     useEffect(() => {
         const storedName = localStorage.getItem("userName");
         if (storedName) {
@@ -54,6 +56,7 @@ function Navbar({ userId, setUserId, setCartCount, cartCount }){
         }
       }, []);
 
+      // Logga in användaren genom att hämta data från backend och spara info i state och localStorage
       async function handleLogin() {
         try {
           const response = await axios.get(`/users/${userId}`);
@@ -68,10 +71,10 @@ function Navbar({ userId, setUserId, setCartCount, cartCount }){
           alert("Användare med id: " + userId + " hittades inte.");
           setUserName("");
           localStorage.removeItem("userId");
-          localStorage.removeItem("userName"); //  Ta bort namnet om det var fel
+          localStorage.removeItem("userName"); // Ta bort namnet om det var fel
         }
       }
-      // Hanterar  utlogg TILLAGT L
+        // Loggar ut användaren genom att rensa localStorage och återställa state
         const handleLogout = () => {
         localStorage.removeItem("userId");
         localStorage.removeItem("userName");
@@ -79,7 +82,8 @@ function Navbar({ userId, setUserId, setCartCount, cartCount }){
         setUserName("");
         setCartCount(0);
       };
-    
+   
+    // Navigerar användaren till adminsidan
     const navigate = useNavigate();
     function goToAdmin() {
         navigate("/admin");
@@ -90,6 +94,8 @@ function Navbar({ userId, setUserId, setCartCount, cartCount }){
     const updateCart = () => {
         setCartOpen(true); // Öppna varukorg när den uppdateras
     };
+
+    // Hämtar användarens varukorg och uppdaterar antal produkter när userId ändras
     useEffect(() => {
         if (userId) {
             getPopulatedCartForUser(userId).then((cartData) => {
@@ -100,6 +106,7 @@ function Navbar({ userId, setUserId, setCartCount, cartCount }){
         }
     }, [userId]);
 
+    // Lägger till en produkt i varukorgen
     async function handleAddToCart(productId, amount) {
         try {
           const { count } = await addProductToCart(userId, productId, amount);  // Uppdatera antalet samtidigt som produkten läggs till
@@ -192,7 +199,8 @@ function Navbar({ userId, setUserId, setCartCount, cartCount }){
                 </Box>
             </Drawer>
 
-                <Dialog open={loginOpen} onClose={() => setLoginOpen(false)}>
+                {/* Inloggning */}
+  I              <Dialog open={loginOpen} onClose={() => setLoginOpen(false)}>
                 <DialogTitle>Logga in</DialogTitle>
                 <DialogContent>
                 <TextField

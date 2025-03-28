@@ -8,7 +8,7 @@ const {
   } = require('../helpers/responseHelper');
 
   
-//Lägger till valfritt antal av en produkt i användarens senaste varukorg
+//Lägger till en produkt i användarens senaste varukorg. Skapar en ny varukorg om ingen öppen finns och uppdaterar mängden om produkten redan finns.
 async function addProductToCart(userId, productId, amount){
   if (!userId || !productId || !amount || amount <= 0) {
     return createResponseError(400, 'Ange rätt datat');
@@ -49,7 +49,7 @@ async function addProductToCart(userId, productId, amount){
 
 }
 
-//Hämta en användares senaste varukorg ink alla tillhörande produkter och deras antal
+//Hämta en användares senaste (obetalda) varukorg ink alla tillhörande produkter och deras antal
 async function getLatestCartForUser(userId) {
   console.log(" Hämtar varukorg för user:", userId);
 
@@ -72,9 +72,8 @@ async function getLatestCartForUser(userId) {
 
     console.log("🛒 Hittad varukorg:", latestCart);
 
-
     if (!latestCart) {
-      return createResponseSuccess([]); // tom varukorg
+      return createResponseSuccess([]); // Tom varukorg
     }
 
     // Städa up data. inkludera title, pris, amount
@@ -92,7 +91,7 @@ async function getLatestCartForUser(userId) {
 } 
 
 
-
+// Tar bort en produkt från en användares varukorg. Om mer än en finns kvar minskas antalet med ett, annars tas produkten bort helt.
 async function removeProductFromCart(userId, productId) {
   const cart = await db.Cart.findOne({ where: { user_id: userId, payed: false } });
   if (!cart) return createResponseError(404, "Ingen aktiv varukorg");
@@ -114,8 +113,8 @@ async function removeProductFromCart(userId, productId) {
   return createResponseSuccess({ message: "Produkten uppdaterad i varukorgen" });
 }
 
-//?
-// Simulera ett köp
+
+// Simulera köp genom att tömma varukorgen och markera den som betald.
 async function completePurchase(userId) {
   try {
     const cart = await db.Cart.findOne({ where: { user_id: userId, payed: false } });
@@ -123,9 +122,6 @@ async function completePurchase(userId) {
     if (!cart) {
       return createResponseError(404, "Ingen aktiv varukorg hittades.");
     }
-
-    // Simulera köp - här kan du lägga till mer logik, exempelvis för att registrera transaktionen.
-    // Töm varukorgen efter köp
     await db.CartRow.destroy({ where: { cart_id: cart.id } });
 
     // Markera varukorgen som betald
@@ -139,7 +135,7 @@ async function completePurchase(userId) {
   }
 }
 
-// Uppdatera TILLAGT
+// Uppdaterar antalet av en specifik produkt i användarens varukorg. Tar bort produkten om antalet blir mindre än 1.
 async function updateAmount(userId, productId , resultAmount) {
   try {
     const cart = await db.Cart.findOne({ where: { user_id: userId, payed: false } });
@@ -151,7 +147,6 @@ async function updateAmount(userId, productId , resultAmount) {
 
     if (!row) return createResponseError(404, "Produkt saknas i varukorgen");
 
-    //osäker om db. ???
     const newAmount = row.amount + resultAmount; 
 
     if (newAmount < 1) {

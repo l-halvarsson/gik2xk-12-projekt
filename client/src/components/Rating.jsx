@@ -1,6 +1,7 @@
 import React from "react";
 import { Typography, Box } from "@mui/material";
 
+// Visar medelbetyget för en produkt
 const Rating = ({ averageRating }) => {
   return (
     <Box sx={{ mt: 2 }}>

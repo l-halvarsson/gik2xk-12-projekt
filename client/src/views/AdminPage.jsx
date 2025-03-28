@@ -4,6 +4,7 @@ import { getAllProducts, create, update, remove } from '../services/ProductServi
 import AdminForm from '../components/AdminForm';
 import AdminProductCard from '../components/AdminProductCard';
 
+//// Admin-sida för att hantera produkter: skapa, uppdatera och ta bort. Visar ett formulär och en lista med produkter.
 function AdminPage() {
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -40,6 +41,7 @@ function AdminPage() {
 
   return (
     <Container sx={{ mt: 0 }}>
+      {/* Använd AdminForm komponeten */}
       <AdminForm
         product={selectedProduct}
         onCreate={handleCreate}
@@ -50,6 +52,7 @@ function AdminPage() {
       <Grid container spacing={2}>
         {products.map((product) => (
           <Grid item key={product.id}>
+            {/* Använd AdminProductCard komponeten */}
             <AdminProductCard
               product={product}
               onEdit={(p) => setSelectedProduct(p)}

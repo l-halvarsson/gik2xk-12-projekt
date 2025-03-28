@@ -38,7 +38,7 @@ Object.keys(db).forEach(modelName => {
   }
 });
 
-//Definiera relationer
+//Definierade relationer
 
 // En användare kan ha flera produkter i en kundvagn
 db.User.hasMany(db.Cart, { foreignKey: 'user_id', onDelete: 'CASCADE' });

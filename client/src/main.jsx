@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import AllProducts from './views/AllProducts.jsx';
-//import CartPage from './views/CartPage.jsx';
 import Home from './views/Home.jsx';
 import ProductDetails from './views/ProductDetails.jsx';
 import AdminPage from './views/AdminPage.jsx';
@@ -31,10 +30,7 @@ const router = createBrowserRouter([
         path: '/products',
         element: <AllProducts />
       },
-      /*{
-        path: '/cart/:userId',
-        element: <CartPage />
-      },*/
+      
     ]
   }
 ]);

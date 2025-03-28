@@ -3,6 +3,7 @@ import { Box, Button, Typography, Container, Grid } from "@mui/material";
 import { Link } from "react-router-dom";
 import bannerImage from "../assets/homepage.png";
 
+// Första sidan
 function Home() {
   return (
     <Grid container sx={{ height: "100vh" }}>

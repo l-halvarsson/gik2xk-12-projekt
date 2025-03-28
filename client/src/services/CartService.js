@@ -1,7 +1,7 @@
 import axios from './api';
 
 
-//Lägger till en produkt i varukorgen
+//Lägger till en produkt i varukorgen från backend
 export async function addProductToCart(userId, productId, amount) {
    
     if (!userId || !productId || !amount) {
@@ -16,52 +16,35 @@ export async function addProductToCart(userId, productId, amount) {
 }
 
 
-//hämtar en användares senaste varukorge OCH dess innehåll 
+//hämtar en användares senaste varukorge OCH dess innehåll från backend
 export async function getPopulatedCartForUser(userId) {
     const response = await axios.get(`/users/${userId}/getCart`); 
     return response.data; 
 } 
 
-// services/CartService.js
-
+//Genomför köp för användare från backend
 export const completePurchaseForUser = async (userId) => {
     const response = await axios.post(`/cart/checkout`, { userId });
     return response.data;
   };
 
   
- // Ta bort produkt från varukorgen
-/*export async function removeProductFromCart(userId, productId) {
-    try {
-      const response = await axios.delete('/cart/removeProduct', {
-        data: { userId, productId }
-      });
-      return response.data; 
-    } catch (error) {
-      console.error("Fel vid borttagning av produkt:", error);
-      throw new Error("Kunde inte ta bort produkten från varukorgen.");
-    }
-  }*/
 
-  // TILLAGT - öka
+  // Ökar produktantal från backend
 export async function increaseProductAmount(userId, productId) {
 
-  //hämta in den önksade amount från användaren
   const userAmount = {userId,productId, resultAmount: 1};
-  //Skicka request till backend
   return  axios.put('/cart/updateProduct', userAmount)
 }
 
-// minska 
+// minska produktantal från backend
 export async function decreaseProductAmount(userId, productId) {
-  //hämta in den önksade amount från användaren
   const userAmount = {userId,productId, resultAmount: -1};
-  //Skicka request till backend
   return  axios.put('/cart/updateProduct', userAmount)
 }
 
 
-//TILLAGT - Kanske överflödigt??? testa!!!!
+//Ta bort produkt från varukorg från backend
 export async function removeProductFromCart(userId, productId) {
   const response = await axios.delete('/cart/removeProduct', { data: { userId, productId } });
   return response.data;

@@ -30,7 +30,7 @@ async function getAllUsers() {
     }
 }
 
-//Hämta användarens senaste varukorg via getLatestCartForUser() i cartService
+//Hämta användarens senaste varukorg 
 function getUserCart(userId) {
     return cartService.getLatestCartForUser(userId);
 }

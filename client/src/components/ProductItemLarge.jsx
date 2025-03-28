@@ -1,6 +1,3 @@
-//Denna komponent kommer visa mer information om produkten
-//Om man klickar på en produkt visas all information 
-
 import { Card, CardContent, CardMedia, Typography, Box, Button } from "@mui/material";
 import placeholderImage from "../assets/placeholder.png";
 import { addProductToCart } from '../services/CartService';
@@ -8,7 +5,7 @@ import { getPopulatedCartForUser } from '../services/CartService';
 
 
 
-
+// Visar en större produktvy med bild, beskrivning, pris och knapp för att lägga till produkten i varukorgen.
 function ProductItemLarge({ product, userId, setCartCount}){
 
   const handleAdd = async () => {
@@ -30,15 +27,15 @@ function ProductItemLarge({ product, userId, setCartCount}){
     maxWidth: 700,
     margin: "auto",
     mt: 4,
-    display: "flex",         // Gör layouten horisontell
-    flexDirection: "row",    // Lägg bild till vänster, innehåll till höger
-    alignItems: "center",    // Vertikal centrering (valfritt)
+    display: "flex",   
+    flexDirection: "row",
+    alignItems: "center",
   }}
 >
   <CardMedia
     component="img"
     sx={{
-      width: 300,            // Bestäm bredd på bilden
+      width: 300,
       height: "auto",
       objectFit: "cover",
     }}
@@ -56,6 +53,7 @@ function ProductItemLarge({ product, userId, setCartCount}){
     <Typography variant="body1" gutterBottom>
       {product.description}
     </Typography>
+   {/* Lägg till i varukorg knappen */}
     <Button
   variant="contained"
   onClick={handleAdd}
@@ -63,7 +61,7 @@ function ProductItemLarge({ product, userId, setCartCount}){
     backgroundColor: "#F5F5DC",
     color: "gray",
     "&:hover": {
-      backgroundColor: "#e0e0c7" // valfri hover-effekt
+      backgroundColor: "#e0e0c7"
     }
   }}
 >
