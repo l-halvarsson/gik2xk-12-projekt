@@ -43,6 +43,7 @@ function AdminPage() {
     <Container sx={{ mt: 0 }}>
       {/* Använd AdminForm komponeten */}
       <AdminForm
+        key={selectedProduct?.id || `new-${Date.now()}`}
         product={selectedProduct}
         onCreate={handleCreate}
         onUpdate={handleUpdate}

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" class="iconify iconify--custom" width="100" height="100" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 256">
+  <!-- Påsens kropp: större form -->
+  <path d="M32 80 L224 80 L208 240 H48 L32 80 Z" fill="#bcae94" />
+
+  <!-- Ihopsittande handtag: större och högre båge -->
+  <path d="M80 80 Q128 24, 176 80" fill="none" stroke="#8c7d66" stroke-width="8" stroke-linecap="round"/>
+</svg>
